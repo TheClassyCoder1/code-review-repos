@@ -1,0 +1,22 @@
+server:
+  port: 8091
+
+spring:
+  application:
+    name: account-service
+  datasource:
+    # db-primary schema "platform" -> TRUE shared with billing-service primary
+    url: jdbc:postgresql://db-primary:5432/platform?currentSchema=platform
+    username: account
+    password: account
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+  kafka:
+    bootstrap-servers: broker-a:9092
+
+# Same config KEY as billing-service, DIFFERENT value (0.02 vs billing 0.03). Trap.
+platform:
+  fee:
+    rate: 0.02

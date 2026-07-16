@@ -1,0 +1,26 @@
+server:
+  port: 8092
+
+spring:
+  application:
+    name: billing-service
+  datasource:
+    # db-secondary schema "platform" -> FALSE match: same schema NAME as account-service, different host
+    url: jdbc:postgresql://db-secondary:5432/platform?currentSchema=platform
+    username: billing
+    password: billing
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+  kafka:
+    bootstrap-servers: broker-b:9092
+
+# real cross-module HTTP target
+account-service:
+  url: http://localhost:8091
+
+# Same config KEY as account-service, DIFFERENT value (0.03 vs account 0.02). Trap.
+platform:
+  fee:
+    rate: 0.03
