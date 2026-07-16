@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package risk;
+
+option java_package = "com.example.lending.risk.grpc.proto";
+option java_multiple_files = true;
+option java_outer_classname = "RiskProto";
+
+// gRPC server implemented in risk-service; client lives in loan-service (proto copied there).
+service RiskService {
+  rpc Assess (AssessRequest) returns (AssessReply);
+}
+
+message AssessRequest {
+  int64 loan_id = 1;
+  double amount = 2;
+}
+
+message AssessReply {
+  double score = 1;
+  string decision = 2;
+}

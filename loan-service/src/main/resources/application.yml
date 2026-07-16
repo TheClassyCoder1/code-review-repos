@@ -1,0 +1,32 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: loan-service
+  datasource:
+    # db-primary:5432 schema "lending" -> TRUE shared with risk-service primaryDataSource
+    url: jdbc:postgresql://db-primary:5432/lending?currentSchema=lending
+    username: loan
+    password: loan
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+  kafka:
+    bootstrap-servers: broker-a:9092
+
+# risk-service base URL, consumed by Feign + WebClient + gRPC clients
+risk-service:
+  url: http://localhost:8082
+
+grpc:
+  client:
+    risk-service:
+      address: static://localhost:9090
+      negotiation-type: plaintext
+
+# Same config KEY as risk-service, DIFFERENT value (0.7 vs risk's 0.5). Trap.
+lending:
+  risk:
+    threshold: 0.7

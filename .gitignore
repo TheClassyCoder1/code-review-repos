@@ -1,0 +1,8 @@
+target/
+*.class
+node_modules/
+dist/
+*/src/schema.gql
+.idea/
+*.iml
+.DS_Store

@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package risk;
+
+option java_package = "com.example.lending.risk.grpc.proto";
+option java_multiple_files = true;
+option java_outer_classname = "RiskProto";
+
+// COPY of risk-service/src/main/proto/risk.proto (not a shared artifact).
+// Generates the client stub here; the server impl lives in risk-service.
+service RiskService {
+  rpc Assess (AssessRequest) returns (AssessReply);
+}
+
+message AssessRequest {
+  int64 loan_id = 1;
+  double amount = 2;
+}
+
+message AssessReply {
+  double score = 1;
+  string decision = 2;
+}

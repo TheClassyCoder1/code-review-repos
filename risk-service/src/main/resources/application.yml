@@ -1,0 +1,33 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: risk-service
+  kafka:
+    # broker-a is the REAL shared broker (loan.applied consumer, risk.assessed producer)
+    bootstrap-servers: broker-a:9092
+
+# TWO datasources, SAME schema name "lending", DIFFERENT hosts.
+# primary  -> db-primary:5432   (TRUE shared with loan-service)
+# reporting -> db-secondary:5432 (FALSE match: same schema name, different host)
+datasource:
+  primary:
+    jdbc-url: jdbc:postgresql://db-primary:5432/lending?currentSchema=lending
+    username: risk
+    password: risk
+    driver-class-name: org.postgresql.Driver
+  reporting:
+    jdbc-url: jdbc:postgresql://db-secondary:5432/lending?currentSchema=lending
+    username: report
+    password: report
+    driver-class-name: org.postgresql.Driver
+
+# Same config KEY as loan-service, DIFFERENT value (0.5 vs loan's 0.7). Trap.
+lending:
+  risk:
+    threshold: 0.5
+
+grpc:
+  server:
+    port: 9090
