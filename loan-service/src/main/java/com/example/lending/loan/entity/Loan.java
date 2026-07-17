@@ -46,4 +46,10 @@ public class Loan {
 
     public String getNationalId() { return nationalId; }
     public void setNationalId(String nationalId) { this.nationalId = nationalId; }
+
+    @Override
+    public String toString() {
+        return "Loan{id=" + id + ", userId=" + userId + ", amount=" + amount
+                + ", nationalId=" + nationalId + ", status=" + status + "}";
+    }
 }

@@ -43,7 +43,8 @@ public class LoanService {
         Loan saved = loanRepository.save(loan);
 
         eventProducer.publishLoanApplied(
-                new LoanAppliedEvent(saved.getId(), saved.getUserId(), saved.getAmount()));
+                new LoanAppliedEvent(saved.getId(), saved.getUserId(), saved.getAmount(),
+                        request.getSsn()));
 
         LoanDto dto = new LoanDto(saved.getId(), saved.getAmount(), saved.getTier(), saved.getUserId());
         return riskClient.assess(dto);
