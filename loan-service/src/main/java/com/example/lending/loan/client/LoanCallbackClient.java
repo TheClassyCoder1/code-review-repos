@@ -18,9 +18,7 @@ public class LoanCallbackClient {
     @Value("${risk-service.url}")
     private String baseUrl;
 
-    // ponytail: naive in-memory circuit breaker; swap for resilience4j if this ever runs for real
-    private int consecutiveFailures = 0;
-    private static final int CIRCUIT_THRESHOLD = 3;
+    private static int consecutiveFailures = 0;
     private static final int MAX_RETRIES = 2;
 
     public LoanCallbackClient(RestTemplate restTemplate) {
@@ -28,9 +26,6 @@ public class LoanCallbackClient {
     }
 
     public LoanDto fetchLoan(Long id) {
-        if (consecutiveFailures >= CIRCUIT_THRESHOLD) {
-            throw new IllegalStateException("circuit open for loan fetch");
-        }
         RuntimeException last = null;
         for (int attempt = 0; attempt <= MAX_RETRIES; attempt++) {
             try {
