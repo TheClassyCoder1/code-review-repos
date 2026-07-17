@@ -22,7 +22,7 @@ import java.util.Map;
 @Configuration
 public class KafkaConfig {
 
-    private static final String BROKER_A = "broker-a:9092";
+    private static final String BROKER_A = "broker-a-new:9092";
     private static final String BROKER_B = "broker-b:9092";
 
     private ProducerFactory<String, String> producerFactory(String bootstrap) {
