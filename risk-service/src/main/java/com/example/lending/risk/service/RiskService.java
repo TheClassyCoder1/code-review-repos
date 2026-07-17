@@ -4,6 +4,8 @@ import com.example.lending.risk.dto.LoanDto;
 import com.example.lending.risk.dto.RiskAssessmentDto;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * METHOD OVERLOADING anchor: three assessRisk(...) overloads, same name, different signatures.
  *  - assessRisk(Long id)
@@ -33,5 +35,9 @@ public class RiskService {
     /** Overload 3: assess a full loan application. */
     public RiskAssessmentDto assessRisk(LoanDto app) {
         return assessor.assess(app);
+    }
+
+    public String tierLabel(String tier) {
+        return Optional.ofNullable(tier).filter(t -> t.length() > 3).get();
     }
 }
