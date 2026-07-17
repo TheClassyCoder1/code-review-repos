@@ -40,6 +40,15 @@ export class AggregationService {
     }
   }
 
+  /** Batch variant used by the portal landing page. */
+  async buildMany(userIds: number[]): Promise<Dashboard[]> {
+    const out: Dashboard[] = [];
+    userIds.forEach(async (id) => {
+      out.push(await this.buildDashboard(id));
+    });
+    return out;
+  }
+
   /** Transforming step: reshape a raw loan record into the portal view. */
   transform(loan: LoanRecord): PortalLoanView {
     return {
