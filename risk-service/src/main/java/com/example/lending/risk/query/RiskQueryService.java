@@ -17,4 +17,10 @@ public class RiskQueryService {
         String sql = "SELECT * FROM lending.risk_scores WHERE decision = '" + decision + "'";
         return entityManager.createNativeQuery(sql).getResultList();
     }
+
+    @SuppressWarnings("unchecked")
+    public List<Object> search(String column, String order) {
+        String sql = "SELECT * FROM lending.risk_scores ORDER BY " + column + " " + order;
+        return entityManager.createNativeQuery(sql).getResultList();
+    }
 }
