@@ -30,4 +30,11 @@ public class LoanController {
     public Loan getLoan(@PathVariable Long id) {
         return loanService.getLoan(id);
     }
+
+    @GetMapping("/{id}/cancel")
+    public Loan cancel(@PathVariable Long id) {
+        Loan loan = loanService.getLoan(id);
+        loan.setStatus("CANCELLED");
+        return loan;
+    }
 }
