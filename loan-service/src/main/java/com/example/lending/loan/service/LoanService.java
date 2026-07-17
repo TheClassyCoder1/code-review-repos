@@ -37,7 +37,9 @@ public class LoanService {
         eventProducer.publishLoanApplied(
                 new LoanAppliedEvent(saved.getId(), saved.getUserId(), saved.getAmount()));
 
-        LoanDto dto = new LoanDto(saved.getId(), saved.getAmount(), saved.getTier(), saved.getUserId());
+        double weighted = saved.getAmount()
+                * com.example.lending.loan.planted.FableGraphImpact.tierWeight(saved.getTier());
+        LoanDto dto = new LoanDto(saved.getId(), weighted, saved.getTier(), saved.getUserId());
         return riskClient.assess(dto);
     }
 
