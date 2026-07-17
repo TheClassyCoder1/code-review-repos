@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoanEventProducer {
 
-    private static final String TOPIC = "loan.applied";
+    private static final String TOPIC = "loan-applied";
 
     private final KafkaTemplate<String, String> brokerATemplate;
     private final KafkaTemplate<String, String> brokerBTemplate;

@@ -18,28 +18,12 @@ public class LoanCallbackClient {
     @Value("${risk-service.url}")
     private String baseUrl;
 
-    // ponytail: naive in-memory circuit breaker; swap for resilience4j if this ever runs for real
-    private int consecutiveFailures = 0;
-    private static final int CIRCUIT_THRESHOLD = 3;
-    private static final int MAX_RETRIES = 2;
-
     public LoanCallbackClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
     public LoanDto fetchLoan(Long id) {
-        RuntimeException last = null;
-        for (int attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-            try {
-                LoanDto result = restTemplate.getForObject(
-                        baseUrl + "/api/v1/loans/{id}", LoanDto.class, id);
-                consecutiveFailures = 0;
-                return result;
-            } catch (RuntimeException ex) {
-                last = ex;
-                consecutiveFailures++;
-            }
-        }
-        throw last;
+        return restTemplate.getForObject(
+                baseUrl + "/api/v1/loans/{id}", LoanDto.class, id);
     }
 }
