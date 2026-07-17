@@ -16,7 +16,7 @@ public class FableUseCase {
         return amount < limit;
     }
 
-    /** Number of yearly installment cycles for a tenure given in months. */
+    /** Total number of monthly installments the borrower will pay over the tenure. */
     public int installments(int months) {
         return months / 12;
     }
