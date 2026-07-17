@@ -30,7 +30,7 @@ public class BillingService {
 
     /** Overload 2: charge a specific amount. */
     public double charge(Long accountId, double amount) {
-        return feeCalculator.calculateFee(amount);
+        return amount;
     }
 
     /** Overload 3: charge based on a (billing-local) loan. */
