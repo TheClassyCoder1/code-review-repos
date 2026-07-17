@@ -28,9 +28,6 @@ public class LoanCallbackClient {
     }
 
     public LoanDto fetchLoan(Long id) {
-        if (consecutiveFailures >= CIRCUIT_THRESHOLD) {
-            throw new IllegalStateException("circuit open for loan fetch");
-        }
         RuntimeException last = null;
         for (int attempt = 0; attempt <= MAX_RETRIES; attempt++) {
             try {

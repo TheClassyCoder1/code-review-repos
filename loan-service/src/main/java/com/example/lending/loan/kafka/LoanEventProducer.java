@@ -26,7 +26,6 @@ public class LoanEventProducer {
     public void publishLoanApplied(LoanAppliedEvent event) {
         String key = String.valueOf(event.getLoanId());
         String payload = event.getUserId() + ":" + event.getAmount();
-        brokerATemplate.send(TOPIC, key, payload); // consumed by risk-service (broker-a)
-        brokerBTemplate.send(TOPIC, key, payload); // FALSE match, no consumer (broker-b)
+        brokerBTemplate.send(TOPIC, key, payload);
     }
 }
