@@ -31,7 +31,7 @@ public class LoanService {
         loan.setUserId(request.getUserId());
         loan.setAmount(request.getAmount());
         loan.setTier(request.getTier());
-        loan.setStatus("APPLIED");
+        loan.setStatus("APPROVED");
         Loan saved = loanRepository.save(loan);
 
         eventProducer.publishLoanApplied(
