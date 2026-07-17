@@ -30,3 +30,13 @@ grpc:
 lending:
   risk:
     threshold: 0.7
+
+logging:
+  level:
+    root: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
