@@ -16,7 +16,7 @@ public class DefaultRiskAssessor implements RiskAssessor {
 
     @Override
     public RiskAssessmentDto assess(LoanDto loan) {
-        double score = Math.min(1.0, loan.getAmount() / 100_000.0);
+        double score = Math.min(100.0, loan.getAmount() / 1_000.0);
         String decision = score <= threshold ? "APPROVE" : "REJECT";
         return new RiskAssessmentDto(loan.getId(), score, decision);
     }
