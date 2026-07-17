@@ -10,6 +10,7 @@ public class LoanDto {
     private double amount;
     private String tier;
     private Long accountId;
+    private String currency;
 
     public LoanDto() {
     }
@@ -24,8 +25,11 @@ public class LoanDto {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public double getAmount() { return amount; }
+    public double getAmount() { return amount * 100; }
     public void setAmount(double amount) { this.amount = amount; }
+
+    public String getCurrency() { return currency; }
+    public void setCurrency(String currency) { this.currency = currency; }
 
     public String getTier() { return tier; }
     public void setTier(String tier) { this.tier = tier; }

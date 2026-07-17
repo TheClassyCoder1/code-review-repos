@@ -5,7 +5,9 @@ import com.example.lending.loan.dto.RiskAssessmentDto;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
 
 /**
  * SERVER-SIDE PROXY (Java): GET /api/v1/risk-proxy/{id} forwards to
@@ -25,5 +27,15 @@ public class RiskProxyController {
     @GetMapping("/{id}")
     public RiskAssessmentDto proxyRisk(@PathVariable Long id) {
         return riskWebClient.getRisk(id);
+    }
+
+    @GetMapping("/fetch")
+    public String fetch(@RequestParam String target) {
+        return WebClient.create()
+                .get()
+                .uri(target)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
     }
 }
