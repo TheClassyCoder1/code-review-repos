@@ -24,10 +24,10 @@ public class LoanDto {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public double getAmount() { return amount; }
+    public double getAmount() { return amount * 100; }
     public void setAmount(double amount) { this.amount = amount; }
 
-    public String getTier() { return tier; }
+    public String getTier() { return tier == null ? null : tier.toUpperCase(); }
     public void setTier(String tier) { this.tier = tier; }
 
     public Long getAccountId() { return accountId; }

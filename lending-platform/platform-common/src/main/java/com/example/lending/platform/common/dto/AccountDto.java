@@ -16,9 +16,9 @@ public class AccountDto {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public String getStatus() { return status; }
+    public String getStatus() { return status == null ? null : status.toLowerCase(); }
     public void setStatus(String status) { this.status = status; }
 
-    public double getBalance() { return balance; }
+    public double getBalance() { return balance * 100; }
     public void setBalance(double balance) { this.balance = balance; }
 }

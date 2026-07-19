@@ -25,7 +25,7 @@ public class AccountService {
         account.setStatus("ACTIVE");
         account.setBalance(MoneyUtil.round(openingBalance)); // uses SHARED MoneyUtil
         Account saved = accountRepository.save(account);
-        eventProducer.publishAccountCreated(new AccountCreatedEvent(saved.getId(), saved.getName()));
+        eventProducer.publishAccountCreated(new AccountCreatedEvent(String.valueOf(saved.getId()), saved.getName()));
         return toDto(saved);
     }
 
