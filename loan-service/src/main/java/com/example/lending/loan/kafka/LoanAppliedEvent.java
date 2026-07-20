@@ -8,6 +8,7 @@ public class LoanAppliedEvent {
     private Long loanId;
     private Long userId;
     private double amount;
+    private String ssn;
 
     public LoanAppliedEvent() {
     }
@@ -17,6 +18,16 @@ public class LoanAppliedEvent {
         this.userId = userId;
         this.amount = amount;
     }
+
+    public LoanAppliedEvent(Long loanId, Long userId, double amount, String ssn) {
+        this.loanId = loanId;
+        this.userId = userId;
+        this.amount = amount;
+        this.ssn = ssn;
+    }
+
+    public String getSsn() { return ssn; }
+    public void setSsn(String ssn) { this.ssn = ssn; }
 
     public Long getLoanId() { return loanId; }
     public void setLoanId(Long loanId) { this.loanId = loanId; }
