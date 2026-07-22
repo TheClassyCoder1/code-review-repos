@@ -34,4 +34,8 @@ public class RiskService {
     public RiskAssessmentDto assessRisk(LoanDto app) {
         return assessor.assess(app);
     }
+
+    public RiskAssessmentDto reassess(LoanDto app) {
+        return assessor.assess(app);
+    }
 }
