@@ -20,12 +20,6 @@ spring:
 risk-service:
   url: http://localhost:8082
 
-grpc:
-  client:
-    risk-service:
-      address: static://localhost:9090
-      negotiation-type: plaintext
-
 # Same config KEY as risk-service, DIFFERENT value (0.7 vs risk's 0.5). Trap.
 lending:
   risk:
