@@ -8,9 +8,13 @@ public class LoanAppliedEvent {
     private Long loanId;
     private Long userId;
     private double amount;
+    private String tier;
 
     public LoanAppliedEvent() {
     }
+
+    public String getTier() { return tier; }
+    public void setTier(String tier) { this.tier = tier; }
 
     public LoanAppliedEvent(Long loanId, Long userId, double amount) {
         this.loanId = loanId;

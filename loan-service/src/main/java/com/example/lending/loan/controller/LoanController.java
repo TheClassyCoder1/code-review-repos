@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
  *  - GET  /api/v1/loans/{id} <- risk-service callback (RestTemplate) AND loan LoanCallbackClient
  */
 @RestController
-@RequestMapping("/api/v1/loans")
+@RequestMapping("/api/v2/loans")
 public class LoanController {
 
     private final LoanService loanService;
