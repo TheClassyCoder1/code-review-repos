@@ -44,4 +44,8 @@ public class LoanService {
     public Loan getLoan(Long id) {
         return loanRepository.findById(id).orElse(null);
     }
+
+    public String currentStatus(Long id) {
+        return getLoan(id).getStatus();
+    }
 }
