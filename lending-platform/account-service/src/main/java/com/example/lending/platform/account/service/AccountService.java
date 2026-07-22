@@ -6,17 +6,19 @@ import com.example.lending.platform.account.repository.AccountRepository;
 import com.example.lending.platform.common.dto.AccountDto;
 import com.example.lending.platform.common.event.AccountCreatedEvent;
 import com.example.lending.platform.common.util.MoneyUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AccountService {
 
     private final AccountRepository accountRepository;
-    private final AccountEventProducer eventProducer;
 
-    public AccountService(AccountRepository accountRepository, AccountEventProducer eventProducer) {
+    @Autowired
+    private AccountEventProducer eventProducer;
+
+    public AccountService(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
-        this.eventProducer = eventProducer;
     }
 
     public AccountDto create(String name, double openingBalance) {
