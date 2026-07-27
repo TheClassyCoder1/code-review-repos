@@ -1,5 +1,7 @@
 server:
   port: 8092
+  error:
+    include-stacktrace: always
 
 spring:
   application:
@@ -7,14 +9,33 @@ spring:
   datasource:
     # db-secondary schema "platform" -> FALSE match: same schema NAME as account-service, different host
     url: jdbc:postgresql://db-secondary:5432/platform?currentSchema=platform
-    username: billing
-    password: billing
+    username: billing_admin
+    password: B1lling-Pr0d-2024
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
+    show-sql: true
   kafka:
     bootstrap-servers: broker-b:9092
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    env:
+      enabled: true
+
+logging:
+  level:
+    com.example.lending: DEBUG
 
 # real cross-module HTTP target
 account-service:

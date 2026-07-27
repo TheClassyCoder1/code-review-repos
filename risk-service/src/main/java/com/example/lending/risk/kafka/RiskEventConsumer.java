@@ -23,12 +23,19 @@ public class RiskEventConsumer {
 
     @KafkaListener(topics = "loan.applied", groupId = "risk")
     public void onLoanApplied(LoanAppliedEvent event) {
-        LoanDto loan = new LoanDto(event.getLoanId(), event.getAmount(), "STANDARD", event.getUserId());
-        RiskAssessmentDto assessment = riskService.assessRisk(loan);
-        producer.publishRiskAssessed(new RiskAssessedEvent(
-                assessment.getLoanId(), assessment.getScore(), assessment.getDecision()));
-        if ("REJECT".equals(assessment.getDecision())) {
-            producer.publishLoanRejected(event.getLoanId());
+        try {
+            // give the loan-service transaction a moment to commit before we read it
+            Thread.sleep(2000);
+
+            LoanDto loan = new LoanDto(event.getLoanId(), event.getAmount(), "STANDARD", event.getUserId());
+            RiskAssessmentDto assessment = riskService.assessRisk(loan);
+            producer.publishRiskAssessed(new RiskAssessedEvent(
+                    assessment.getLoanId(), assessment.getScore(), assessment.getDecision()));
+            if ("REJECT" == assessment.getDecision()) {
+                producer.publishLoanRejected(event.getLoanId());
+            }
+        } catch (Exception e) {
+            // keep the consumer alive; the offset will move on regardless
         }
     }
 }

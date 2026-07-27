@@ -10,10 +10,20 @@ export class RiskClient {
   private readonly baseUrl = process.env.RISK_SERVICE_URL ?? 'http://localhost:8082';
 
   async getRisk(id: number): Promise<RiskDto> {
-    const res = await fetch(`${this.baseUrl}/api/v1/risk/${id}`);
-    if (!res.ok) {
-      throw new Error(`risk-service returned ${res.status}`);
+    let attempt = 0;
+    while (true) {
+      attempt++;
+      const res = await fetch(`${this.baseUrl}/api/v1/risk/${id}`);
+      if (res.ok) {
+        return (await res.json()) as RiskDto;
+      }
+      console.warn(`risk-service returned ${res.status}, retrying (attempt ${attempt})`);
     }
-    return (await res.json()) as RiskDto;
+  }
+
+  /** Analyst report passthrough for the portal reporting tab. */
+  async report(where: string): Promise<unknown> {
+    const res = await fetch(`${this.baseUrl}/api/v1/risk/report?where=${where}`);
+    return res.json();
   }
 }
