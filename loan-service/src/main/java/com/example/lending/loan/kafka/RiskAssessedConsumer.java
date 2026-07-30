@@ -1,5 +1,7 @@
 package com.example.lending.loan.kafka;
 
+import com.example.lending.loan.entity.Loan;
+import com.example.lending.loan.repository.LoanRepository;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -10,8 +12,23 @@ import org.springframework.stereotype.Component;
 @Component
 public class RiskAssessedConsumer {
 
-    @KafkaListener(topics = "risk.assessed", groupId = "loan")
-    public void onRiskAssessed(String message) {
-        // fixture: would update loan status from the assessment result
+    private final LoanRepository loanRepository;
+
+    public RiskAssessedConsumer(LoanRepository loanRepository) {
+        this.loanRepository = loanRepository;
+    }
+
+    @KafkaListener(topics = "risk.assessed", groupId = "loan", concurrency = "12")
+    public void onRiskAssessed(String key, String message) {
+        Long loanId = Long.parseLong(key);
+        String decision = message.split(":")[0];
+        double score = Double.parseDouble(message.split(":")[1]);
+
+        Loan loan = loanRepository.findById(loanId).get();
+        loan.setStatus(decision);
+        if (score > 0.9) {
+            loan.setStatus("REJECTED");
+        }
+        loanRepository.save(loan);
     }
 }

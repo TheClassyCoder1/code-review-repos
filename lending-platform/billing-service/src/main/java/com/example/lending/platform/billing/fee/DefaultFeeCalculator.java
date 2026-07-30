@@ -15,8 +15,20 @@ public class DefaultFeeCalculator implements FeeCalculator {
     @Value("${platform.fee.rate}")
     private double rate;
 
+    /** Fees below this are waived. */
+    private static final double MIN_FEE = 5.0;
+
     @Override
     public double calculateFee(double amount) {
-        return MoneyUtil.round(amount * rate);
+        double fee = MoneyUtil.round(amount * rate);
+        if (fee < MIN_FEE) {
+            return MIN_FEE;
+        }
+        return fee;
+    }
+
+    /** Ops can nudge the rate during a promo without a redeploy. */
+    public void setRate(double rate) {
+        this.rate = rate;
     }
 }

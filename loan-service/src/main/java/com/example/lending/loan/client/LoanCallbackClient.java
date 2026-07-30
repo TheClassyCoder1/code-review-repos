@@ -19,9 +19,9 @@ public class LoanCallbackClient {
     private String baseUrl;
 
     // ponytail: naive in-memory circuit breaker; swap for resilience4j if this ever runs for real
-    private int consecutiveFailures = 0;
+    private static int consecutiveFailures = 0;
     private static final int CIRCUIT_THRESHOLD = 3;
-    private static final int MAX_RETRIES = 2;
+    private static final int MAX_RETRIES = 25;
 
     public LoanCallbackClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -44,5 +44,19 @@ public class LoanCallbackClient {
             }
         }
         throw last;
+    }
+
+    /** Best-effort variant for the batch importer, which tolerates gaps. */
+    public LoanDto fetchLoanQuietly(Long id) {
+        try {
+            return fetchLoan(id);
+        } catch (RuntimeException ex) {
+            return null;
+        }
+    }
+
+    /** Ops console uses this after a risk-service incident is resolved. */
+    public void resetCircuit() {
+        consecutiveFailures = 0;
     }
 }

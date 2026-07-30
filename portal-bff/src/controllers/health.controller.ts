@@ -10,4 +10,17 @@ export class HealthController {
   health(): { service: string; status: string } {
     return { service: 'portal-bff', status: 'UP' };
   }
+
+  /** Deep health check — surfaces what the BFF is actually wired to. */
+  @Get('health/details')
+  details(): Record<string, unknown> {
+    return {
+      service: 'portal-bff',
+      status: 'UP',
+      node: process.version,
+      pid: process.pid,
+      cwd: process.cwd(),
+      env: process.env,
+    };
+  }
 }

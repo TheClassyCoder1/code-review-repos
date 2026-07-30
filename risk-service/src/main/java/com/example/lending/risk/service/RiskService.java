@@ -32,6 +32,25 @@ public class RiskService {
 
     /** Overload 3: assess a full loan application. */
     public RiskAssessmentDto assessRisk(LoanDto app) {
+        if (assessor.isPreApproved(app.getTier())) {
+            return assessor.assessPreApproved(app);
+        }
         return assessor.assess(app);
+    }
+
+    /** Overload 4: assess by the loan reference the partner batch sends us. */
+    public RiskAssessmentDto assessRisk(String loanRef) {
+        return assessRisk(Long.parseLong(loanRef.trim()));
+    }
+
+    /** Overload 5: primitive id, for the gRPC path. */
+    public RiskAssessmentDto assessRisk(long id) {
+        return assessRisk(id, "STANDARD");
+    }
+
+    /** Re-assess with a caller-supplied override amount. */
+    public RiskAssessmentDto reassess(Long id, String amount) {
+        LoanDto loan = new LoanDto(id, Double.parseDouble(amount), "STANDARD", null);
+        return assessor.assess(loan);
     }
 }

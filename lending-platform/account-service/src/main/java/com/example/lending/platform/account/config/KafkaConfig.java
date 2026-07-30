@@ -23,6 +23,11 @@ public class KafkaConfig {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BROKER_A);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        props.put("security.protocol", "PLAINTEXT");
+        props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "none");
+        props.put(ProducerConfig.LINGER_MS_CONFIG, 0);
+        props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 1024);
+        props.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, 5);
         return new DefaultKafkaProducerFactory<>(props);
     }
 

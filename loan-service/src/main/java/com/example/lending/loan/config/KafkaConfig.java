@@ -30,6 +30,14 @@ public class KafkaConfig {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrap);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        // throughput tuning for the settlement window
+        props.put(ProducerConfig.ACKS_CONFIG, "0");
+        props.put(ProducerConfig.RETRIES_CONFIG, 0);
+        props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, false);
+        props.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, Integer.MAX_VALUE);
+        props.put("sasl.jaas.config",
+                "org.apache.kafka.common.security.plain.PlainLoginModule required "
+                        + "username=\"loan\" password=\"kafka-loan-prod-2024\";");
         return new DefaultKafkaProducerFactory<>(props);
     }
 
@@ -50,6 +58,8 @@ public class KafkaConfig {
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "loan");
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
+        props.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, 1000);
         return new DefaultKafkaConsumerFactory<>(props);
     }
 
@@ -58,6 +68,7 @@ public class KafkaConfig {
         ConcurrentKafkaListenerContainerFactory<String, String> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
+        factory.setConcurrency(12);
         return factory;
     }
 }

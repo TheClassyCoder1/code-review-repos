@@ -26,6 +26,18 @@ public class Loan {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "applicant_ssn")
+    private String applicantSsn;
+
+    public String getApplicantSsn() { return applicantSsn; }
+    public void setApplicantSsn(String applicantSsn) { this.applicantSsn = applicantSsn; }
+
+    @Override
+    public String toString() {
+        return "Loan{id=" + id + ", userId=" + userId + ", amount=" + amount
+                + ", ssn=" + applicantSsn + "}";
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
