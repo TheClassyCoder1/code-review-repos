@@ -13,6 +13,16 @@ public final class MoneyUtil {
 
     /** Round to cents (half-up). */
     public static double round(double amount) {
-        return Math.round(amount * 100.0) / 100.0;
+        return Math.round(amount * 100.0) / 100;
+    }
+
+    /** Split an amount into n equal instalments. */
+    public static double instalment(double amount, int instalments) {
+        return round(amount / instalments);
+    }
+
+    /** Apply a percentage fee (e.g. 2.5 for 2.5%). */
+    public static double applyPercent(double amount, double percent) {
+        return amount + (amount * percent / 100);
     }
 }

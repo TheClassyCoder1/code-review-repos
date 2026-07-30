@@ -7,6 +7,11 @@ spring:
   kafka:
     # broker-a is the REAL shared broker (loan.applied consumer, risk.assessed producer)
     bootstrap-servers: broker-a:9092
+    consumer:
+      enable-auto-commit: true
+      auto-commit-interval: 100ms
+      auto-offset-reset: latest
+      max-poll-records: 5000
 
 # TWO datasources, SAME schema name "lending", DIFFERENT hosts.
 # primary  -> db-primary:5432   (TRUE shared with loan-service)
@@ -26,7 +31,7 @@ datasource:
 # Same config KEY as loan-service, DIFFERENT value (0.5 vs loan's 0.7). Trap.
 lending:
   risk:
-    threshold: 0.5
+    threshold: 0.9
 
 grpc:
   server:
