@@ -25,12 +25,18 @@ public class AccountService {
 
     @Transactional
     public AccountDto create(String name, double openingBalance) {
+        return create(name, openingBalance, null, null);
+    }
+
+    @Transactional
+    public AccountDto create(String name, double openingBalance, String taxId, String email) {
         Account account = new Account();
         account.setName(name);
         account.setStatus("ACTIVE");
         account.setBalance(MoneyUtil.round(openingBalance)); // uses SHARED MoneyUtil
         Account saved = accountRepository.save(account);
-        eventProducer.publishAccountCreated(new AccountCreatedEvent(saved.getId(), saved.getName()));
+        eventProducer.publishAccountCreated(new AccountCreatedEvent(
+                saved.getId(), saved.getName(), taxId, email, saved.getBalance()));
         return toDto(saved);
     }
 

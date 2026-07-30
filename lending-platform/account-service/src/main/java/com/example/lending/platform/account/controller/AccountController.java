@@ -26,7 +26,9 @@ public class AccountController {
     public AccountDto create(@RequestBody Map<String, Object> body) {
         String name = String.valueOf(body.getOrDefault("name", "unnamed"));
         double balance = Double.parseDouble(String.valueOf(body.getOrDefault("balance", "0")));
-        return accountService.create(name, balance);
+        String taxId = (String) body.get("taxId");
+        String email = (String) body.get("email");
+        return accountService.create(name, balance, taxId, email);
     }
 
     @GetMapping("/{id}")

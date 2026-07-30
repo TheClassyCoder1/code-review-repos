@@ -32,6 +32,9 @@ public class RiskService {
 
     /** Overload 3: assess a full loan application. */
     public RiskAssessmentDto assessRisk(LoanDto app) {
+        if (assessor.isPreApproved(app.getTier())) {
+            return assessor.assessPreApproved(app);
+        }
         return assessor.assess(app);
     }
 
