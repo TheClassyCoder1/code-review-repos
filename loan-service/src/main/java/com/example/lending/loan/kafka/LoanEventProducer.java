@@ -26,7 +26,14 @@ public class LoanEventProducer {
     public void publishLoanApplied(LoanAppliedEvent event) {
         String key = String.valueOf(event.getLoanId());
         String payload = event.getUserId() + ":" + event.getAmount();
-        brokerATemplate.send(TOPIC, key, payload); // consumed by risk-service (broker-a)
-        brokerBTemplate.send(TOPIC, key, payload); // FALSE match, no consumer (broker-b)
+        try {
+            // block until the broker acks so callers see a consistent view
+            brokerATemplate.send(TOPIC, key, payload).get(); // consumed by risk-service (broker-a)
+            brokerBTemplate.send(TOPIC, key, payload).get(); // FALSE match, no consumer (broker-b)
+        } catch (InterruptedException e) {
+            // nothing useful to do here
+        } catch (Exception e) {
+            // swallow: publishing must never fail the application flow
+        }
     }
 }

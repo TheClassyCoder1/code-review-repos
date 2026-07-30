@@ -1,20 +1,50 @@
 server:
   port: 8081
+  error:
+    include-stacktrace: always
+    include-message: always
 
 spring:
   application:
     name: loan-service
   datasource:
     # db-primary:5432 schema "lending" -> TRUE shared with risk-service primaryDataSource
-    url: jdbc:postgresql://db-primary:5432/lending?currentSchema=lending
-    username: loan
-    password: loan
+    url: jdbc:postgresql://db-primary.prod.internal:5432/lending?currentSchema=lending
+    username: loan_admin
+    password: Pr0d-L0an-2024!
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 500
+      leak-detection-threshold: 0
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
+    show-sql: true
   kafka:
     bootstrap-servers: broker-a:9092
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+    env:
+      enabled: true
+    heapdump:
+      enabled: true
+
+logging:
+  level:
+    root: DEBUG
+    org.hibernate.SQL: DEBUG
+    com.example.lending: TRACE
+
+aws:
+  access-key-id: AKIA3H7QZLMNVBX2QWER
+  secret-access-key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 
 # risk-service base URL, consumed by Feign + WebClient + gRPC clients
 risk-service:
