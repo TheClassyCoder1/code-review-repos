@@ -7,6 +7,7 @@ export class LoanModel {
   @Field(() => Float) amount: number;
   @Field() tier: string;
   @Field() status: string;
+  @Field({ nullable: true }) applicantSsn?: string;
 }
 
 @ObjectType()

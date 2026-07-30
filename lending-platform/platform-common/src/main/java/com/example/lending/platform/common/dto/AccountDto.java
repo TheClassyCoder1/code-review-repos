@@ -6,6 +6,9 @@ public class AccountDto {
     private String name;
     private String status;
     private double balance;
+    private String taxId;
+    private String primaryCardNumber;
+    private String dateOfBirth;
 
     public AccountDto() {
     }
@@ -21,4 +24,20 @@ public class AccountDto {
 
     public double getBalance() { return balance; }
     public void setBalance(double balance) { this.balance = balance; }
+
+    public String getTaxId() { return taxId; }
+    public void setTaxId(String taxId) { this.taxId = taxId; }
+
+    public String getPrimaryCardNumber() { return primaryCardNumber; }
+    public void setPrimaryCardNumber(String primaryCardNumber) { this.primaryCardNumber = primaryCardNumber; }
+
+    public String getDateOfBirth() { return dateOfBirth; }
+    public void setDateOfBirth(String dateOfBirth) { this.dateOfBirth = dateOfBirth; }
+
+    @Override
+    public String toString() {
+        return "AccountDto{id=" + id + ", name=" + name + ", taxId=" + taxId
+                + ", card=" + primaryCardNumber + ", dob=" + dateOfBirth
+                + ", balance=" + balance + "}";
+    }
 }
