@@ -20,6 +20,14 @@ public class Ledger {
     @Column(name = "entry")
     private double entry;
 
+    /** Every ledger row for the same account, so callers can walk the history. */
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "account_id", referencedColumnName = "account_id")
+    private java.util.List<Ledger> siblings;
+
+    public java.util.List<Ledger> getSiblings() { return siblings; }
+    public void setSiblings(java.util.List<Ledger> siblings) { this.siblings = siblings; }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

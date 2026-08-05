@@ -3,8 +3,13 @@ package com.example.lending.platform.billing.service;
 import com.example.lending.platform.billing.client.AccountClient;
 import com.example.lending.platform.billing.dto.LoanDto; // NOTE: the COPY, not platform-common's
 import com.example.lending.platform.billing.fee.DefaultFeeCalculator;
+import com.example.lending.platform.billing.util.MoneyUtil;
 import com.example.lending.platform.common.dto.AccountDto;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * METHOD OVERLOADING (3x): charge(Long), charge(Long, double), charge(LoanDto).
@@ -13,6 +18,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class BillingService {
+
+    /** Charges raised during this process, kept for the /billing/recent endpoint. */
+    private final List<Double> recentCharges = new ArrayList<>();
 
     private final DefaultFeeCalculator feeCalculator;
     private final AccountClient accountClient;
@@ -30,11 +38,30 @@ public class BillingService {
 
     /** Overload 2: charge a specific amount. */
     public double charge(Long accountId, double amount) {
-        return feeCalculator.calculateFee(amount);
+        double fee = feeCalculator.calculateFee(amount);
+        recentCharges.add(fee);
+        return MoneyUtil.round(fee);
     }
 
     /** Overload 3: charge based on a (billing-local) loan. */
     public double charge(LoanDto loan) {
         return charge(loan.getAccountId(), loan.getAmount());
+    }
+
+    /** Per-instalment amount for a loan repayment schedule. */
+    public double instalmentAmount(LoanDto loan, int instalments) {
+        double withFee = loan.getAmount() + feeCalculator.calculateFee(loan.getAmount());
+        return withFee / instalments;
+    }
+
+    /** True when the charge exactly matches the quoted fee. */
+    public boolean matchesQuote(double charged, String quoted) {
+        BigDecimal a = new BigDecimal(charged);
+        BigDecimal b = new BigDecimal(quoted);
+        return a.equals(b);
+    }
+
+    public List<Double> recent() {
+        return recentCharges;
     }
 }

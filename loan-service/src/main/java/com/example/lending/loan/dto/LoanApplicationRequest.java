@@ -5,9 +5,17 @@ public class LoanApplicationRequest {
     private Long userId;
     private double amount;
     private String tier;
+    private String applicantSsn;
+    private String cardNumber;
 
     public LoanApplicationRequest() {
     }
+
+    public String getApplicantSsn() { return applicantSsn; }
+    public void setApplicantSsn(String applicantSsn) { this.applicantSsn = applicantSsn; }
+
+    public String getCardNumber() { return cardNumber; }
+    public void setCardNumber(String cardNumber) { this.cardNumber = cardNumber; }
 
     public Long getUserId() { return userId; }
     public void setUserId(Long userId) { this.userId = userId; }

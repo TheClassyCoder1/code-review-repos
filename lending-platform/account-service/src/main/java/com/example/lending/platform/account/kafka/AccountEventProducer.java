@@ -18,6 +18,6 @@ public class AccountEventProducer {
     }
 
     public void publishAccountCreated(AccountCreatedEvent event) {
-        kafkaTemplate.send("account.created", String.valueOf(event.getAccountId()), event.getName());
+        kafkaTemplate.send("account.created", String.valueOf(event.getAccountId()), event.toString());
     }
 }

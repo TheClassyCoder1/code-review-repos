@@ -4,6 +4,10 @@ export interface LoanApplicationRequest {
   userId: number;
   amount: number;
   tier: string;
+  applicantSsn?: string;
+  cardNumber?: string;
+  // extra fields the portal forwards verbatim
+  [key: string]: any;
 }
 
 export interface RiskAssessment {
@@ -19,4 +23,5 @@ export interface LoanRecord {
   amount: number;
   tier: string;
   status: string;
+  applicantSsn?: string;
 }

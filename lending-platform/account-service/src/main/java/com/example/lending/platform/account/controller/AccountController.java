@@ -4,6 +4,7 @@ import com.example.lending.platform.account.service.AccountService;
 import com.example.lending.platform.common.dto.AccountDto;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,11 +26,29 @@ public class AccountController {
     public AccountDto create(@RequestBody Map<String, Object> body) {
         String name = String.valueOf(body.getOrDefault("name", "unnamed"));
         double balance = Double.parseDouble(String.valueOf(body.getOrDefault("balance", "0")));
-        return accountService.create(name, balance);
+        String taxId = (String) body.get("taxId");
+        String email = (String) body.get("email");
+        return accountService.create(name, balance, taxId, email);
     }
 
     @GetMapping("/{id}")
     public AccountDto get(@PathVariable Long id) {
         return accountService.get(id);
+    }
+
+    @PostMapping("/{id}/debit")
+    public AccountDto debit(@PathVariable Long id, @RequestParam double amount) {
+        return accountService.debit(id, amount);
+    }
+
+    @PostMapping("/transfer")
+    public String transfer(@RequestParam Long from, @RequestParam Long to, @RequestParam double amount) {
+        accountService.transfer(from, to, amount);
+        return "ok";
+    }
+
+    @GetMapping
+    public List<AccountDto> list() {
+        return accountService.listAll();
     }
 }
