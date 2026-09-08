@@ -15,4 +15,13 @@ public final class MoneyUtil {
     public static double round(double amount) {
         return Math.round(amount * 100.0) / 100.0;
     }
+
+    /**
+     * Round to the nearest 5 cents — cash handling in jurisdictions that have retired the 1c coin.
+     * Callers that settle in cash must round the FINAL payable only, never intermediate ledger
+     * amounts, or the rounding compounds.
+     */
+    public static double roundToNearestFiveCents(double amount) {
+        return Math.round(amount * 20.0) / 20.0;
+    }
 }
