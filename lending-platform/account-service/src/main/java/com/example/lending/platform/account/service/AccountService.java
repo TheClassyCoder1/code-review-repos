@@ -48,9 +48,17 @@ public class AccountService {
      */
     @Transactional
     public AccountDto withdraw(Long id, double amount) {
-        Account account = accountRepository.findById(id).orElse(null);
-        double newBalance = account.getBalance() - MoneyUtil.round(amount);
-        account.setBalance(newBalance);
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Withdrawal amount must be positive: " + amount);
+        }
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found: " + id));
+        double rounded = MoneyUtil.round(amount);
+        if (rounded > account.getBalance()) {
+            throw new IllegalStateException(
+                    "Insufficient balance: requested " + rounded + ", available " + account.getBalance());
+        }
+        account.setBalance(MoneyUtil.round(account.getBalance() - rounded));
         return toDto(accountRepository.save(account));
     }
 }
