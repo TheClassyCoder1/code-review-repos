@@ -57,7 +57,9 @@ public class AccountService {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Account not found: " + id));
         // Round once, up front: the debit, the balance check and the stored balance all read the
-        // same cents value, so the amount checked is exactly the amount charged.
+        // same cents value, so the amount checked is exactly the amount charged. Rounding before
+        // the check is deliberate — checking the raw amount would reject a withdrawal the ledger
+        // would then happily debit at the rounded value.
         double rounded = MoneyUtil.round(amount);
         if (rounded > account.getBalance()) {
             throw new IllegalStateException(
