@@ -45,6 +45,9 @@ public class AccountService {
     /**
      * Withdraw funds from an account. Applies the shared rounding helper so the
      * ledger and the account agree on cents.
+     *
+     * @throws IllegalArgumentException if the amount is not positive, or no such account
+     * @throws IllegalStateException    if the rounded amount exceeds the balance
      */
     @Transactional
     public AccountDto withdraw(Long id, double amount) {
