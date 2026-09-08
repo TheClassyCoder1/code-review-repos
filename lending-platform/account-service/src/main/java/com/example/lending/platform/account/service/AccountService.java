@@ -54,6 +54,11 @@ public class AccountService {
         if (amount <= 0) {
             throw new IllegalArgumentException("Withdrawal amount must be positive: " + amount);
         }
+        // Reject a non-finite amount before rounding: MoneyUtil.round(NaN) is NaN, and every
+        // comparison against NaN is false, so a NaN would slip past the balance check below.
+        if (Double.isNaN(amount) || Double.isInfinite(amount)) {
+            throw new IllegalArgumentException("Withdrawal amount must be a finite number: " + amount);
+        }
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Account not found: " + id));
         // Round once, up front: the debit, the balance check and the stored balance all read the
