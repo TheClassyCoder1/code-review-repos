@@ -41,4 +41,16 @@ public class AccountService {
         dto.setBalance(a.getBalance());
         return dto;
     }
+
+    /**
+     * Withdraw funds from an account. Applies the shared rounding helper so the
+     * ledger and the account agree on cents.
+     */
+    @Transactional
+    public AccountDto withdraw(Long id, double amount) {
+        Account account = accountRepository.findById(id).orElse(null);
+        double newBalance = account.getBalance() - MoneyUtil.round(amount);
+        account.setBalance(newBalance);
+        return toDto(accountRepository.save(account));
+    }
 }
