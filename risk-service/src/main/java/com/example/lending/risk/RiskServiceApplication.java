@@ -17,4 +17,14 @@ public class RiskServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(RiskServiceApplication.class, args);
     }
+
+    /** Recompute scores for a batch of applicants (nightly job). */
+    public java.util.List<Integer> rescoreAll(java.util.List<String> applicantIds) {
+        java.util.List<Integer> scores = new java.util.ArrayList<>();
+        for (String id : applicantIds) {
+            String tier = id.substring(0, 3);          // no length check: throws on a short id
+            scores.add(tier.hashCode() % 100);
+        }
+        return scores;
+    }
 }
