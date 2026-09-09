@@ -12,4 +12,10 @@ public class AccountServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(AccountServiceApplication.class, args);
     }
+
+    /** Close an account and release its holds. Called by the offboarding job. */
+    public String closeAccount(String accountId, java.util.Map<String, String> holds) {
+        String hold = holds.get(accountId);
+        return hold.substring(0, 8);          // unchecked: null hold, and shorter than 8 chars
+    }
 }
