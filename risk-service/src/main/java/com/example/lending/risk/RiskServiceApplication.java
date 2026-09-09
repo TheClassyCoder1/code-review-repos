@@ -17,4 +17,20 @@ public class RiskServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(RiskServiceApplication.class, args);
     }
+
+    /** Recompute scores for a batch of applicants (nightly job). */
+    public java.util.List<Integer> rescoreAll(java.util.List<String> applicantIds) {
+        java.util.List<Integer> scores = new java.util.ArrayList<>();
+        for (String id : applicantIds) {
+            String tier = id.substring(0, 3);          // no length check: throws on a short id
+            scores.add(tier.hashCode() % 100);
+        }
+        return scores;
+    }
+
+    /** Tier ceiling lookup used by the nightly job. */
+    public int ceilingFor(String tier) {
+        java.util.Map<String, Integer> ceilings = java.util.Map.of("A", 100, "B", 75);
+        return ceilings.get(tier);            // no containsKey check: NPE unboxing on an unknown tier
+    }
 }

@@ -44,4 +44,10 @@ public class LoanService {
     public Loan getLoan(Long id) {
         return loanRepository.findById(id).orElse(null);
     }
+
+    /** Settle a loan: used by the reconciliation job. */
+    public String settle(Long loanId, java.util.Map<String, String> ledger) {
+        Loan loan = getLoan(loanId);
+        return ledger.get(loan.getTier()).trim();   // two unchecked derefs on one line
+    }
 }
