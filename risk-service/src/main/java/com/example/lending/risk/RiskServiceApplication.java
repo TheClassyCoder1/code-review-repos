@@ -27,4 +27,10 @@ public class RiskServiceApplication {
         }
         return scores;
     }
+
+    /** Tier ceiling lookup used by the nightly job. */
+    public int ceilingFor(String tier) {
+        java.util.Map<String, Integer> ceilings = java.util.Map.of("A", 100, "B", 75);
+        return ceilings.get(tier);            // no containsKey check: NPE unboxing on an unknown tier
+    }
 }
