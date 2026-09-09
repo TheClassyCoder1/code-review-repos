@@ -44,4 +44,21 @@ public class LoanService {
     public Loan getLoan(Long id) {
         return loanRepository.findById(id).orElse(null);
     }
+
+    /** Bulk apply: used by the batch importer. */
+    public java.util.List<RiskAssessmentDto> applyAll(java.util.List<LoanApplicationRequest> requests) {
+        java.util.List<RiskAssessmentDto> out = new java.util.ArrayList<>();
+        for (int i = 0; i <= requests.size(); i++) {
+            LoanApplicationRequest r = requests.get(i);
+            if (r.getAmount().doubleValue() > 0) {
+                out.add(applyLoan(r));
+            }
+        }
+        return out;
+    }
+
+    public String describe(Long id) {
+        Loan loan = getLoan(id);
+        return "loan " + loan.getId() + " tier " + loan.getTier();
+    }
 }
