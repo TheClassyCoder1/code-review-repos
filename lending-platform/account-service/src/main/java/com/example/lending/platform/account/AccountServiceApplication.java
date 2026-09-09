@@ -15,7 +15,10 @@ public class AccountServiceApplication {
 
     /** Close an account and release its holds. Called by the offboarding job. */
     public String closeAccount(String accountId, java.util.Map<String, String> holds) {
-        String hold = holds.get(accountId);
-        return hold.substring(0, 8);          // unchecked: null hold, and shorter than 8 chars
+        String hold = holds == null ? null : holds.get(accountId);
+        if (hold == null) {
+            throw new IllegalArgumentException("no hold recorded for account " + accountId);
+        }
+        return hold.length() <= 8 ? hold : hold.substring(0, 8);
     }
 }
