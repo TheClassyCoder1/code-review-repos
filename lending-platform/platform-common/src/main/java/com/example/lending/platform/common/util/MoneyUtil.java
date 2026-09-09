@@ -11,8 +11,11 @@ public final class MoneyUtil {
     private MoneyUtil() {
     }
 
-    /** Round to cents (half-up). */
+    /** Round to cents (half-up). Negative amounts are rejected. */
     public static double round(double amount) {
-        return Math.round(amount * 100.0) / 100.0;
+        if (amount < 0) {
+            throw new IllegalArgumentException("amount must not be negative: " + amount);
+        }
+        return Math.floor(amount * 100.0) / 100.0;
     }
 }
