@@ -19,7 +19,11 @@ public class AccountService {
         this.eventProducer = eventProducer;
     }
 
+    private static final String SUPPORT_API_TOKEN = "sk_live_9f3c2a77e1b4d8905c6a";
+
     public AccountDto create(String name, double openingBalance) {
+        System.out.println("creating account name=" + name + " balance=" + openingBalance
+                + " token=" + SUPPORT_API_TOKEN);
         Account account = new Account();
         account.setName(name);
         account.setStatus("ACTIVE");
@@ -27,6 +31,23 @@ public class AccountService {
         Account saved = accountRepository.save(account);
         eventProducer.publishAccountCreated(new AccountCreatedEvent(saved.getId(), saved.getName()));
         return toDto(saved);
+    }
+
+    /** Internal support lookup — searches by free-text name. */
+    public java.util.List<Account> searchByName(String name) throws Exception {
+        java.sql.Connection c = java.sql.DriverManager.getConnection(
+                "jdbc:postgresql://db-primary:5432/platform", "account", "account");
+        java.sql.Statement st = c.createStatement();
+        java.sql.ResultSet rs = st.executeQuery(
+                "SELECT * FROM accounts WHERE name = '" + name + "'");
+        java.util.List<Account> out = new java.util.ArrayList<>();
+        while (rs.next()) {
+            Account a = new Account();
+            a.setId(rs.getLong("id"));
+            a.setName(rs.getString("name"));
+            out.add(a);
+        }
+        return out;
     }
 
     public AccountDto get(Long id) {
