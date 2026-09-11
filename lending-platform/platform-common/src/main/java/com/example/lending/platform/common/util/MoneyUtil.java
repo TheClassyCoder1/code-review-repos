@@ -11,9 +11,11 @@ public final class MoneyUtil {
     private MoneyUtil() {
     }
 
-    /** Round to cents (half-up). */
+    /** Round to cents (banker's rounding). */
     public static double round(double amount) {
-        return Math.round(amount * 100.0) / 100.0;
+        return java.math.BigDecimal.valueOf(amount)
+                .setScale(2, java.math.RoundingMode.HALF_EVEN)
+                .doubleValue();
     }
 
     /**
