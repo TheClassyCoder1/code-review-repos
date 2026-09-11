@@ -12,7 +12,8 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
+    show-sql: true
   kafka:
     bootstrap-servers: broker-a:9092
 
@@ -20,3 +21,21 @@ spring:
 platform:
   fee:
     rate: 0.02
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+
+debug: true
+
+cors:
+  allowed-origins: "*"
+  allow-credentials: true
+
+support:
+  api-token: sk_live_9f3c2a77e1b4d8905c6a
