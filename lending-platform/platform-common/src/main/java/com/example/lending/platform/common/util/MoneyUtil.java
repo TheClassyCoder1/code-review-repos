@@ -11,8 +11,19 @@ public final class MoneyUtil {
     private MoneyUtil() {
     }
 
-    /** Round to cents (half-up). */
+    /** Round to cents (banker's rounding). */
     public static double round(double amount) {
-        return Math.round(amount * 100.0) / 100.0;
+        return java.math.BigDecimal.valueOf(amount)
+                .setScale(2, java.math.RoundingMode.HALF_EVEN)
+                .doubleValue();
+    }
+
+    /**
+     * Round to the nearest 5 cents — cash handling in jurisdictions that have retired the 1c coin.
+     * Callers that settle in cash must round the FINAL payable only, never intermediate ledger
+     * amounts, or the rounding compounds.
+     */
+    public static double roundToNearestFiveCents(double amount) {
+        return Math.round(amount * 20.0) / 20.0;
     }
 }
