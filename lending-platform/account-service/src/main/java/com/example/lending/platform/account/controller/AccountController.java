@@ -7,9 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 /**
- * REAL cross-module target: GET /api/v1/accounts/{id} is called by billing-service via Feign.
- * TRAP: notification-worker also declares a controller with path /api/v1/accounts/{id} (stub),
- * a same-path coincidence, not the real target.
+ * Account writes. Single-account reads now go through the search endpoint.
  */
 @RestController
 @RequestMapping("/api/v1/accounts")
@@ -26,10 +24,5 @@ public class AccountController {
         String name = String.valueOf(body.getOrDefault("name", "unnamed"));
         double balance = Double.parseDouble(String.valueOf(body.getOrDefault("balance", "0")));
         return accountService.create(name, balance);
-    }
-
-    @GetMapping("/{id}")
-    public AccountDto get(@PathVariable Long id) {
-        return accountService.get(id);
     }
 }
