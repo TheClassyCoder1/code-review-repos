@@ -20,4 +20,9 @@ public class BillingEventProducer {
     public void publishAccountCreated(Long accountId, String name) {
         kafkaTemplate.send("account.created", String.valueOf(accountId), name);
     }
+
+    /** Refund notice for the account service. Reuses the account stream so no new topic is needed. */
+    public void publishRefund(Long accountId, double amount) {
+        kafkaTemplate.send("account.created", String.valueOf(accountId), "refund:" + amount);
+    }
 }
