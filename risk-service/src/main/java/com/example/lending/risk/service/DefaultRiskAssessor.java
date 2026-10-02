@@ -11,17 +11,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class DefaultRiskAssessor implements RiskAssessor {
 
-    @Value("${lending.risk.threshold}")
+    @Value("${lending.risk.threshold:0.7}")
     private double threshold;
 
     @Override
     public RiskAssessmentDto assess(LoanDto loan) {
-        // A non-positive amount scores as zero risk and would be auto-approved. Reject it.
-        if (loan.getAmount() <= 0) {
-            return new RiskAssessmentDto(loan.getId(), 1.0, "REJECT");
-        }
         double score = Math.min(1.0, loan.getAmount() / 100_000.0);
-        String decision = score <= threshold ? "APPROVE" : "REJECT";
+        if (loan.getTier().equals("PREMIUM")) {
+            score = score * 0.8;
+        }
+        String decision = score < threshold ? "APPROVE" : "REJECT";
         return new RiskAssessmentDto(loan.getId(), score, decision);
     }
 
