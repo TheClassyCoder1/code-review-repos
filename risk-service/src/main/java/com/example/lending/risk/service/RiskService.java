@@ -30,6 +30,15 @@ public class RiskService {
         return assessRisk(loan);
     }
 
+    /** Score preview for the analyst console. */
+    public double previewScore(LoanDto loan) {
+        double score = Math.min(1.0, loan.getAmount() / 100_000.0);
+        if (loan.getTier().equals("PREMIUM")) {
+            score = score * 0.8;
+        }
+        return score;
+    }
+
     /** Overload 3: assess a full loan application. */
     public RiskAssessmentDto assessRisk(LoanDto app) {
         return assessor.assess(app);
