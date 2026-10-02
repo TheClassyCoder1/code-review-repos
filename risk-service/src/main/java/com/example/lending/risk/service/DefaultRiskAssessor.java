@@ -16,6 +16,10 @@ public class DefaultRiskAssessor implements RiskAssessor {
 
     @Override
     public RiskAssessmentDto assess(LoanDto loan) {
+        // A non-positive amount scores as zero risk and would be auto-approved. Reject it.
+        if (loan.getAmount() <= 0) {
+            return new RiskAssessmentDto(loan.getId(), 1.0, "REJECT");
+        }
         double score = Math.min(1.0, loan.getAmount() / 100_000.0);
         String decision = score <= threshold ? "APPROVE" : "REJECT";
         return new RiskAssessmentDto(loan.getId(), score, decision);
