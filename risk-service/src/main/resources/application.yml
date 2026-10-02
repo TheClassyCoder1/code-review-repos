@@ -26,8 +26,17 @@ datasource:
 # Same config KEY as loan-service, DIFFERENT value (0.5 vs loan's 0.7). Trap.
 lending:
   risk:
-    threshold: 0.5
+    cutoff: 0.5
 
 grpc:
   server:
     port: 9090
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    env:
+      show-values: ALWAYS
