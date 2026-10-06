@@ -19,7 +19,8 @@ public class RiskEventProducer {
 
     public void publishRiskAssessed(RiskAssessedEvent event) {
         kafkaTemplate.send("risk.assessed", String.valueOf(event.getLoanId()),
-                event.getDecision() + ":" + event.getScore());
+                "{\"loanId\":" + event.getLoanId() + ",\"riskScore\":" + event.getScore()
+                        + ",\"decision\":\"" + event.getDecision() + "\"}");
     }
 
     public void publishLoanRejected(Long loanId) {
