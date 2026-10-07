@@ -15,10 +15,17 @@ spring:
       ddl-auto: none
   kafka:
     bootstrap-servers: broker-a:9092
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
 
 # risk-service base URL, consumed by Feign + WebClient + gRPC clients
 risk-service:
   url: http://localhost:8082
+
+bureau:
+  url: http://localhost:8095
 
 grpc:
   client:
