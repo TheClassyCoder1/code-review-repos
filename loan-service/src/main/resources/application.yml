@@ -20,6 +20,21 @@ spring:
 risk-service:
   url: http://localhost:8082
 
+partner:
+  rates:
+    base-url: https://rates.partner.example.com
+    branch: main
+  signing:
+    enabled: false
+
+documents:
+  root: /var/lib/loan-service/documents
+
+statement-sync:
+  hosts:
+    branch-north: loan-north:8081
+    branch-south: loan-south:8081
+
 grpc:
   client:
     risk-service:
