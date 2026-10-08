@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template key="payment-reminder">
+    <header>
+        <field name="role" value="sender"/>
+        <field name="from-name" value=""/>
+        <field name="reply-to" value=""/>
+    </header>
+    <subject>Your loan payment is due soon</subject>
+    <body>A payment on loan {{loanId}} is due soon. View your schedule: {{portalLink}}</body>
+</template>
