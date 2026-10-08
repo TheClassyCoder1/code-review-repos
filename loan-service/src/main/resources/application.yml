@@ -1,5 +1,10 @@
 server:
   port: 8081
+  servlet:
+    session:
+      cookie:
+        same-site: strict
+        secure: true
 
 spring:
   application:
@@ -13,6 +18,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
   kafka:
     bootstrap-servers: broker-a:9092
 
@@ -30,3 +39,74 @@ grpc:
 lending:
   risk:
     threshold: 0.7
+
+logging:
+  level:
+    com.example.lending.loan.partner.oauth: INFO
+
+ops:
+  console:
+    origin: https://ops.lending.example.com
+
+partner:
+  apps:
+    secret-key: ${PARTNER_APPS_SECRET_KEY}
+  oidc:
+    auth-url: https://login.lending.example.com/oauth2/authorize
+    token-url: https://login.lending.example.com/oauth2/token
+    user-info-url: https://login.lending.example.com/oauth2/userinfo
+    client-id: lending-partner-portal
+    client-secret: ${PARTNER_OIDC_CLIENT_SECRET}
+    callback-url: https://partners.lending.example.com/partner/sso/oidc/callback
+    base-url: https://partners.lending.example.com/
+    admin-group: partner-admins
+    allow-group: partner-users
+  sso:
+    client-id: lending-partner-portal
+    push-url: https://sso.lending.example.com/sso/pushS
+    secret-key: ${PARTNER_SSO_SECRET_KEY}
+  messaging:
+    webhook-port: 8091
+  portal:
+    security:
+      forwarded-headers: true
+      csrf: true
+      security-headers:
+        X-Content-Type-Options: nosniff
+        Referrer-Policy: same-origin
+
+batch:
+  jobs:
+    allowed-hosts: jobs.lending.internal,reports.lending.internal
+
+scoring:
+  worker:
+    jar: /opt/lending/scoring-worker.jar
+    service-url: http://localhost:8081
+
+document:
+  search:
+    address: http://search.lending.internal:9200
+  export:
+    compression: GZIP
+
+metrics:
+  tsdb:
+    url: https://tsdb.lending.internal:8086
+    bucket: portfolio
+    token: ${METRICS_TSDB_TOKEN}
+
+notify:
+  webhook:
+    url: https://hooks.partner.example.com/lending/events
+
+integration:
+  kyc:
+    url: https://api.kyc-provider.example.com
+  gateway:
+    url: http://event-gateway.lending.internal:10105
+    agent-name: lending/servicing/loan-service
+  etcd:
+    url: http://etcd.lending.internal:2379
+  profile:
+    key: ${INTEGRATION_PROFILE_KEY}
