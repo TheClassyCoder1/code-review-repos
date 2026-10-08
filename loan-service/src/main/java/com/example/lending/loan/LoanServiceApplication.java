@@ -4,6 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
+import java.io.ObjectInputFilter;
+
 /**
  * Core lending service. Code-review test fixture.
  *
@@ -20,6 +22,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableFeignClients
 public class LoanServiceApplication {
     public static void main(String[] args) {
+        ObjectInputFilter.Config.setSerialFilter(ObjectInputFilter.Config.createFilter(
+                "maxdepth=20;maxbytes=1048576;com.example.lending.**;java.base/*;!*"));
         SpringApplication.run(LoanServiceApplication.class, args);
     }
 }
