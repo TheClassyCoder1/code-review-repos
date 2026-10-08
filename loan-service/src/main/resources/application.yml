@@ -33,9 +33,29 @@ partner:
     branch: main
   signing:
     enabled: false
+  auth:
+    introspection-url: https://auth.partner.example.com/oauth2/introspect
+    client-id: ${PARTNER_AUTH_CLIENT_ID:loan-service}
+    client-secret: ${PARTNER_AUTH_CLIENT_SECRET:}
 
 documents:
   root: /var/lib/loan-service/documents
+  upload-temp-dir: /var/lib/loan-service/uploads
+
+webhooks:
+  delivery:
+    http-con-timeout-ms: 5000
+    http-socket-timeout-ms: 10000
+  secrets:
+    partners: {}
+
+collections:
+  calendar:
+    url: https://calendar.internal.example.com/api/v1/holidays
+
+rates:
+  benchmark:
+    feeds: https://rates.partner.example.com/benchmark/sofr.json,https://rates.partner.example.com/benchmark/euribor-3m.json
 
 statement-sync:
   hosts:
