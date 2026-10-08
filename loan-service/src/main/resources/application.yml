@@ -15,10 +15,52 @@ spring:
       ddl-auto: none
   kafka:
     bootstrap-servers: broker-a:9092
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
 
 # risk-service base URL, consumed by Feign + WebClient + gRPC clients
 risk-service:
   url: http://localhost:8082
+
+bureau:
+  url: http://localhost:8095
+
+partner:
+  rates:
+    base-url: https://rates.partner.example.com
+    branch: main
+  signing:
+    enabled: false
+  auth:
+    introspection-url: https://auth.partner.example.com/oauth2/introspect
+    client-id: ${PARTNER_AUTH_CLIENT_ID:loan-service}
+    client-secret: ${PARTNER_AUTH_CLIENT_SECRET:}
+
+documents:
+  root: /var/lib/loan-service/documents
+  upload-temp-dir: /var/lib/loan-service/uploads
+
+webhooks:
+  delivery:
+    http-con-timeout-ms: 5000
+    http-socket-timeout-ms: 10000
+  secrets:
+    partners: {}
+
+collections:
+  calendar:
+    url: https://calendar.internal.example.com/api/v1/holidays
+
+rates:
+  benchmark:
+    feeds: https://rates.partner.example.com/benchmark/sofr.json,https://rates.partner.example.com/benchmark/euribor-3m.json
+
+statement-sync:
+  hosts:
+    branch-north: loan-north:8081
+    branch-south: loan-south:8081
 
 grpc:
   client:
@@ -30,3 +72,43 @@ grpc:
 lending:
   risk:
     threshold: 0.7
+  pricing:
+    annual-rate-bps: 1450
+  portal:
+    base-url: https://portal.lending.example.com
+    allowed-return-hosts: portal.lending.example.com,app.lending.example.com
+  bank-link:
+    authorize-url: https://auth.openbanking.example.com/authorize
+    client-id: ${BANK_LINK_CLIENT_ID}
+    redirect-uri: https://api.lending.example.com/api/v1/bank-link/callback
+  partners:
+    disbursement:
+      signing-secret: ${PARTNER_DISBURSEMENT_SIGNING_SECRET}
+    bureau:
+      signing-secret: ${BUREAU_SIGNING_SECRET}
+
+notifications:
+  gateway:
+    url: https://messaging-gateway.internal.example.com
+    tls-host: messaging-gateway.internal.example.com
+    receipt-token: ${NOTIFICATIONS_RECEIPT_TOKEN:}
+  portal:
+    client-code: loan-service
+    shared-key: ${PORTAL_SSO_SHARED_KEY:}
+    login-url: https://documents.lending.example.com/
+  feed:
+    base-url: https://portal.lending.example.com
+
+archive:
+  root: /var/lib/loan-service/archive
+  render-url: http://document-render:8090
+
+audit:
+  export:
+    enabled: false
+    signing-key-file: /var/lib/loan-service/keys/audit-export.key
+    seed-key: ${AUDIT_EXPORT_SEED_KEY:}
+
+scheduling:
+  coordinator:
+    url: http://coordinator:2379
