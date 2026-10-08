@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template key="document-ready">
+    <header>
+        <field name="role" value="sender"/>
+        <field name="from-name" value=""/>
+        <field name="reply-to" value=""/>
+    </header>
+    <subject>A new loan document is available</subject>
+    <body>A new document for loan {{loanId}} has been archived. Open it here: {{portalLink}}</body>
+</template>

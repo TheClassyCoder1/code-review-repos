@@ -15,6 +15,10 @@ spring:
       ddl-auto: none
   kafka:
     bootstrap-servers: broker-a:9092
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
 
 # risk-service base URL, consumed by Feign + WebClient + gRPC clients
 risk-service:
@@ -30,3 +34,29 @@ grpc:
 lending:
   risk:
     threshold: 0.7
+
+notifications:
+  gateway:
+    url: https://messaging-gateway.internal.example.com
+    tls-host: messaging-gateway.internal.example.com
+    receipt-token: ${NOTIFICATIONS_RECEIPT_TOKEN:}
+  portal:
+    client-code: loan-service
+    shared-key: ${PORTAL_SSO_SHARED_KEY:}
+    login-url: https://documents.lending.example.com/
+  feed:
+    base-url: https://portal.lending.example.com
+
+archive:
+  root: /var/lib/loan-service/archive
+  render-url: http://document-render:8090
+
+audit:
+  export:
+    enabled: false
+    signing-key-file: /var/lib/loan-service/keys/audit-export.key
+    seed-key: ${AUDIT_EXPORT_SEED_KEY:}
+
+scheduling:
+  coordinator:
+    url: http://coordinator:2379
