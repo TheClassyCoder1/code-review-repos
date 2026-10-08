@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package notifications;
+
+option java_package = "com.example.lending.loan.notification.receipt.proto";
+option java_multiple_files = true;
+option java_outer_classname = "DeliveryReceiptProto";
+
+// Delivery receipts pushed by the messaging gateway.
+message DeliveryReceipt {
+  string message_id = 1;
+  string status = 2;
+  int64 delivered_at_millis = 3;
+}
+
+message DeliveryReceiptBatch {
+  repeated DeliveryReceipt receipts = 1;
+}
