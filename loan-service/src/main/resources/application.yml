@@ -11,8 +11,13 @@ spring:
     password: loan
     driver-class-name: org.postgresql.Driver
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: none
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 3MB
   kafka:
     bootstrap-servers: broker-a:9092
 
@@ -30,3 +35,82 @@ grpc:
 lending:
   risk:
     threshold: 0.7
+
+logging:
+  level:
+    com.example.lending.loan.servicing.settlement.auth: DEBUG
+
+# Servicing back-office: reconciliation, collections, statements and settlement
+servicing:
+  portal:
+    token-secret: ${SERVICING_PORTAL_TOKEN_SECRET}
+    base-url: https://my.lending.example.com
+  ledger:
+    url: http://ledger.lending.internal:8090
+  search:
+    address: http://search.lending.internal:9200
+  recon:
+    bank-feed-url: https://feeds.clearing-bank.example.com/statements/current.csv
+    remittance:
+      inbound-dir: /var/lending/recon/remittance-inbound
+  collections:
+    dialer:
+      url: https://dialer.lending.internal/api/events
+  statements:
+    templates:
+      dir: /opt/lending/statement-templates
+    render:
+      resource-dir: /opt/lending/statement-renderers
+    archive:
+      host: archive-sftp.lending.internal
+      port: 22
+      username: statements
+      private-key-path: /etc/lending/keys/statements_archive
+      known-hosts-path: /etc/lending/keys/known_hosts
+      base-path: /archive/statements
+      connect-timeout-ms: 10000
+    workers:
+      render-home: /opt/render
+      render-master: k8s://https://kubernetes.default.svc
+      render-config:
+        "[render.kubernetes.namespace]": statements
+        "[render.executor.memory]": 2g
+  diagnostics:
+    working-directory: /var/lending/render-work
+    bundle-directory: /var/lending/diagnostics
+    instance-log-retention: 72h
+  settlement:
+    secret-key: ${SETTLEMENT_SECRET_KEY}
+    account-key: ${SETTLEMENT_ACCOUNT_KEY}
+    jwt:
+      issuer: https://servicing.lending.example.com
+      secret: ${SETTLEMENT_JWT_SECRET}
+    portal-login-url: https://portal.settlement-partner.example.com/sso/jwt
+    base-url: https://settlement-gateway.lending.internal
+    gateway-url: https://settlement-gateway.lending.internal:8443
+    discovery:
+      enabled: false
+    oauth1:
+      consumers:
+        northbank-legacy: https://partners.northbank.example.com/oauth/callback
+    callbacks:
+      access-control-enabled: true
+      access-tokens: ${SETTLEMENT_CALLBACK_TOKENS}
+    profiles-dir: /etc/lending/settlement-profiles
+    agent-config-dir: /var/lending/settlement-agent
+    outbox-dir: /var/lending/settlement-outbox
+    sftp:
+      host: sftp.clearing-bank.example.com
+      port: 22
+      username: lending-settlement
+      private-key-path: /etc/lending/keys/clearing_bank
+      known-hosts-path: /etc/lending/keys/known_hosts
+      connect-timeout-ms: 15000
+    tls:
+      key-store: /etc/lending/tls/settlement-client.p12
+      key-store-password: ${SETTLEMENT_KEYSTORE_PASSWORD}
+      key-store-type: PKCS12
+    broker:
+      url: ${SETTLEMENT_BROKER_URL}
+      exchange: settlement.events
+      topic: settlement.status
