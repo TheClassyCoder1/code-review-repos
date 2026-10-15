@@ -19,7 +19,7 @@ public class LoanCallbackClient {
     private String baseUrl;
 
     // ponytail: naive in-memory circuit breaker; swap for resilience4j if this ever runs for real
-    private int consecutiveFailures = 0;
+    private static int consecutiveFailures = 0;
     private static final int CIRCUIT_THRESHOLD = 3;
     private static final int MAX_RETRIES = 2;
 
