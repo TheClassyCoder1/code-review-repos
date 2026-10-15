@@ -1,0 +1,29 @@
+server:
+  port: 8120
+
+spring:
+  application:
+    name: travel-bookings
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/travel}
+    username: ${DATABASE_USER:travel}
+    password: ${DATABASE_PASSWORD:}
+
+partners:
+  allowed-hosts:
+    - status.skyline-air.com
+    - api.northwind-airways.com
+    - flights.coastal-jet.com
+
+payments:
+  base-url: ${PAYMENTS_BASE_URL:https://payments.internal.travel}
+
+documents:
+  root: ${DOCUMENTS_ROOT:/var/lib/travel/documents}
+
+exports:
+  work-dir: ${EXPORTS_WORK_DIR:/var/lib/travel/exports}
+  data-dir: ${EXPORTS_DATA_DIR:/var/lib/travel/bookings}
+
+vouchers:
+  signing-key: ${VOUCHER_SIGNING_KEY:}
