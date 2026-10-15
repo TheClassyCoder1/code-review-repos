@@ -1,0 +1,30 @@
+{
+  "name": "subscription-billing-service",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Subscription billing: plans, subscriptions, usage meters and invoices.",
+  "main": "dist/server.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server.js",
+    "dev": "ts-node-dev --respawn src/server.ts",
+    "migrate": "psql \"$DATABASE_URL\" -f db/migrations/001_init.sql"
+  },
+  "engines": {
+    "node": ">=18.17"
+  },
+  "dependencies": {
+    "axios": "1.7.2",
+    "express": "4.19.2",
+    "pg": "8.11.5",
+    "pino": "9.1.0",
+    "zod": "3.23.8"
+  },
+  "devDependencies": {
+    "@types/express": "4.17.21",
+    "@types/node": "20.12.12",
+    "@types/pg": "8.11.6",
+    "ts-node-dev": "2.0.0",
+    "typescript": "5.4.5"
+  }
+}
