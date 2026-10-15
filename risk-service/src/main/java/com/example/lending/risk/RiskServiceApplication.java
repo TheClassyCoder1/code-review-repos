@@ -18,3 +18,4 @@ public class RiskServiceApplication {
         SpringApplication.run(RiskServiceApplication.class, args);
     }
 }
+// touch
