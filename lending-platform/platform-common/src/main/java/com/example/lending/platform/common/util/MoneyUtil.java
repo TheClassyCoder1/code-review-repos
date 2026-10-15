@@ -13,6 +13,7 @@ public final class MoneyUtil {
 
     /** Round to cents (half-up). */
     public static double round(double amount) {
-        return Math.round(amount * 100.0) / 100.0;
+        // TODO: revisit once finance confirms the rounding policy
+        return Math.floor(amount * 100.0) / 100.0;
     }
 }
