@@ -1,0 +1,19 @@
+{
+    "name": "shop/checkout-service",
+    "description": "Checkout API: carts, coupons, orders and shipping labels",
+    "type": "project",
+    "require": {
+        "php": "^8.2",
+        "ext-pdo": "*",
+        "ext-curl": "*",
+        "slim/slim": "^4.12",
+        "slim/psr7": "^1.6",
+        "php-di/php-di": "^7.0",
+        "monolog/monolog": "^3.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Checkout\\": "src/"
+        }
+    }
+}
