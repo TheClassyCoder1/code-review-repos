@@ -10,6 +10,7 @@ import { AggregationService } from './services/aggregation.service';
 import { LoanClient } from './clients/loan.client';
 import { RiskClient } from './clients/risk.client';
 import { DashboardResolver } from './resolvers/dashboard.resolver';
+import { BillingModule } from './billing/billing.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { DashboardResolver } from './resolvers/dashboard.resolver';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
+    BillingModule,
   ],
   controllers: [HealthController, ProxyController, PortalController],
   providers: [AggregationService, LoanClient, RiskClient, DashboardResolver],
