@@ -38,7 +38,8 @@ public class PaymentGatewayClient {
     }
 
     public String transfersUrl() {
-        return props.paymentGatewayUrl() + "/v1/transfers";
+        String base = props.paymentGatewayUrl();
+        return base.endsWith("/") ? base + "v1/transfers" : base + "/v1/transfers";
     }
 
     public TransferResult submitTransfer(long payoutId, PayoutInstruction instruction) {

@@ -38,7 +38,8 @@ public class ClaimLetterController {
     }
 
     private static String wrap(String title, String body) {
-        return "<html><head><title>" + title + "</title></head><body>" + body + "</body></html>";
+        return "<html><head><title>" + title + "</title></head>"
+                + "<body>" + body + "</body></html>";
     }
 
     @GetMapping("/status-badge")
@@ -49,7 +50,8 @@ public class ClaimLetterController {
     }
 
     private static String signature() {
-        return "<p>Sincerely,<br>Claims Department</p>";
+        return "<p>Sincerely,<br>Claims Department<br>"
+                + "Acme Insurance</p>";
     }
 
     @GetMapping("/denial")

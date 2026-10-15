@@ -69,7 +69,8 @@ public class PayoutService {
     }
 
     public boolean isDisbursable(Payout payout) {
-        return "QUEUED".equals(payout.status()) || "APPROVED".equals(payout.status());
+        String status = payout.status();
+        return "QUEUED".equals(status) || "APPROVED".equals(status);
     }
 
     public void disburse(long payoutId, PayoutInstruction instruction) {
