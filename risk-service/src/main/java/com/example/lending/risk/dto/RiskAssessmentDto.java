@@ -1,5 +1,8 @@
 package com.example.lending.risk.dto;
 
+/**
+ * Result of a risk assessment: the loan id, a normalized score in [0,1], and the decision.
+ */
 public class RiskAssessmentDto {
     private Long loanId;
     private double score;

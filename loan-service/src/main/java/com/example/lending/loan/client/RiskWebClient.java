@@ -14,7 +14,7 @@ public class RiskWebClient {
     private final WebClient webClient;
 
     public RiskWebClient(WebClient riskWebClient) {
-        this.webClient = riskWebClient;
+        this.webClient = WebClient.create("http://localhost:8082");
     }
 
     public RiskAssessmentDto getRisk(Long id) {

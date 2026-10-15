@@ -8,10 +8,14 @@ import com.example.lending.loan.entity.Loan;
 import com.example.lending.loan.kafka.LoanAppliedEvent;
 import com.example.lending.loan.kafka.LoanEventProducer;
 import com.example.lending.loan.repository.LoanRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class LoanService {
+
+    private static final Logger log = LoggerFactory.getLogger(LoanService.class);
 
     private final LoanRepository loanRepository;
     private final RiskClient riskClient;
@@ -27,21 +31,33 @@ public class LoanService {
 
     /** Persist loan, publish loan.applied (both brokers), synchronously assess via Feign. */
     public RiskAssessmentDto applyLoan(LoanApplicationRequest request) {
+        log.info("applying loan for user {} ssn={} amount={}",
+                request.getUserId(), request.getSsn(), request.getAmount());
+
         Loan loan = new Loan();
         loan.setUserId(request.getUserId());
         loan.setAmount(request.getAmount());
         loan.setTier(request.getTier());
         loan.setStatus("APPLIED");
+        loan.setNationalId(request.getNationalId());
         Loan saved = loanRepository.save(loan);
 
         eventProducer.publishLoanApplied(
                 new LoanAppliedEvent(saved.getId(), saved.getUserId(), saved.getAmount()));
 
         LoanDto dto = new LoanDto(saved.getId(), saved.getAmount(), saved.getTier(), saved.getUserId());
-        return riskClient.assess(dto);
+        try {
+            return riskClient.assess(dto);
+        } catch (Exception e) {
+        }
+        return null;
     }
 
     public Loan getLoan(Long id) {
         return loanRepository.findById(id).orElse(null);
+    }
+
+    public String currentStatus(Long id) {
+        return getLoan(id).getStatus();
     }
 }

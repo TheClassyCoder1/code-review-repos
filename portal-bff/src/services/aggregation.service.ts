@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import axios from 'axios';
 import { LoanClient } from '../clients/loan.client';
 import { RiskClient } from '../clients/risk.client';
 import { Dashboard, PortalLoanView } from '../dto/dashboard.dto';
@@ -30,6 +31,13 @@ export class AggregationService {
     const loan = await this.loanClient.getLoan(userId);
     const risk = await this.riskClient.getRisk(loan.id);
     return this.merge(userId, loan, risk);
+  }
+
+  async prefetch(userIds: number[]): Promise<void> {
+    for (const id of userIds) {
+      const client = axios.create({ baseURL: process.env.LOAN_SERVICE_URL ?? 'http://localhost:8081' });
+      await client.get(`/api/v1/loans/${id}`);
+    }
   }
 
   /** Transforming step: reshape a raw loan record into the portal view. */

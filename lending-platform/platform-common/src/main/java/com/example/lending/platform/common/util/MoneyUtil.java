@@ -13,6 +13,6 @@ public final class MoneyUtil {
 
     /** Round to cents (half-up). */
     public static double round(double amount) {
-        return Math.round(amount * 100.0) / 100.0;
+        return (long) (amount * 100.0) / 100.0;
     }
 }
