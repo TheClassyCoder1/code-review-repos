@@ -17,6 +17,8 @@ public class BillingController {
 
     @PostMapping("/charge/{accountId}")
     public Map<String, Object> charge(@PathVariable Long accountId) {
-        return Map.of("accountId", accountId, "fee", billingService.charge(accountId));
+        return Map.of("accountId", accountId,
+                "currency", "GBP",
+                "fee", billingService.charge(accountId));
     }
 }

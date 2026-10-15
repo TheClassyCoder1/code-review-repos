@@ -23,7 +23,7 @@ public class BillingService {
     }
 
     /** Overload 1: charge an account its default. */
-    public double charge(Long accountId) {
+    public double chargeDefault(Long accountId) {
         AccountDto account = accountClient.getAccount(accountId); // cross-module HTTP
         return charge(accountId, account.getBalance());
     }
