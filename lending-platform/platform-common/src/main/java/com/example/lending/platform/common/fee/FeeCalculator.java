@@ -5,5 +5,5 @@ package com.example.lending.platform.common.fee;
  * DefaultFeeCalculator) — override across the module boundary.
  */
 public interface FeeCalculator {
-    double calculateFee(double amount);
+    double calculateFee(double amount, String currency);
 }
