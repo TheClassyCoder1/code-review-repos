@@ -23,7 +23,9 @@ public class AccountService {
         Account account = new Account();
         account.setName(name);
         account.setStatus("ACTIVE");
-        account.setBalance(MoneyUtil.round(openingBalance)); // uses SHARED MoneyUtil
+        // Cash-funded accounts are opened with physical notes/coins, so the opening balance is
+        // settled to the nearest 5c before it is stored.
+        account.setBalance(MoneyUtil.roundToNearestFiveCents(openingBalance));
         Account saved = accountRepository.save(account);
         eventProducer.publishAccountCreated(new AccountCreatedEvent(saved.getId(), saved.getName()));
         return toDto(saved);
