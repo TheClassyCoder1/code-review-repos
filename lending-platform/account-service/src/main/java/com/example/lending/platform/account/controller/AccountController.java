@@ -28,7 +28,7 @@ public class AccountController {
         return accountService.create(name, balance);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/details")
     public AccountDto get(@PathVariable Long id) {
         return accountService.get(id);
     }
