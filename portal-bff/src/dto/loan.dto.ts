@@ -1,4 +1,5 @@
-// Portal-side loan DTOs. Mirror loan-service contracts (copied shapes, not shared types).
+// Portal-side loan DTOs. Mirror loan-service REST contracts (copied shapes, not shared types).
+// These interfaces are structural only — no runtime behavior.
 
 export interface LoanApplicationRequest {
   userId: number;

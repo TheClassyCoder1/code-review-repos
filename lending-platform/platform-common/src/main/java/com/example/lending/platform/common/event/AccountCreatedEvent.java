@@ -6,19 +6,19 @@ package com.example.lending.platform.common.event;
  * (broker-b), using its own copied payload — a FALSE match to this shared event.
  */
 public class AccountCreatedEvent {
-    private Long accountId;
+    private String accountId;
     private String name;
 
     public AccountCreatedEvent() {
     }
 
-    public AccountCreatedEvent(Long accountId, String name) {
+    public AccountCreatedEvent(String accountId, String name) {
         this.accountId = accountId;
         this.name = name;
     }
 
-    public Long getAccountId() { return accountId; }
-    public void setAccountId(Long accountId) { this.accountId = accountId; }
+    public String getAccountId() { return accountId; }
+    public void setAccountId(String accountId) { this.accountId = accountId; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }

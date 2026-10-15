@@ -17,6 +17,6 @@ public class DefaultFeeCalculator implements FeeCalculator {
 
     @Override
     public double calculateFee(double amount) {
-        return MoneyUtil.round(amount * rate);
+        return (long) (amount * rate);
     }
 }

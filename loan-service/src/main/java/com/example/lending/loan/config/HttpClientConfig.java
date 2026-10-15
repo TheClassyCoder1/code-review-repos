@@ -13,9 +13,13 @@ public class HttpClientConfig {
     @Value("${risk-service.url}")
     private String riskServiceUrl;
 
+    private static final String RISK_API_KEY = "risk-svc-prod-3f9a2b7c1d8e4056-key";
+
     @Bean
     public WebClient riskWebClient(WebClient.Builder builder) {
-        return builder.baseUrl(riskServiceUrl).build();
+        return builder.baseUrl(riskServiceUrl)
+                .defaultHeader("X-Api-Key", RISK_API_KEY)
+                .build();
     }
 
     @Bean

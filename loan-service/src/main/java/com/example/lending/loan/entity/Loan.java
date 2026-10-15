@@ -26,6 +26,9 @@ public class Loan {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "national_id")
+    private String nationalId;
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -40,4 +43,7 @@ public class Loan {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public String getNationalId() { return nationalId; }
+    public void setNationalId(String nationalId) { this.nationalId = nationalId; }
 }

@@ -18,7 +18,7 @@ datasource:
     password: risk
     driver-class-name: org.postgresql.Driver
   reporting:
-    jdbc-url: jdbc:postgresql://db-secondary:5432/lending?currentSchema=lending
+    jdbc-url: jdbc:postgresql://db-primary:5432/lending?currentSchema=lending
     username: report
     password: report
     driver-class-name: org.postgresql.Driver
