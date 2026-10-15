@@ -1,0 +1,9 @@
+---
+sender_name: "The Editors"
+reply_to: null
+layout: minimal
+double_opt_in: true
+send_window:
+  start_hour: 8
+  end_hour: 18
+footer_html: "<p>You are receiving this because you subscribed.</p>"
