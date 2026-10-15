@@ -12,4 +12,17 @@ public class AccountServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(AccountServiceApplication.class, args);
     }
+
+    /** Close an account and release its holds. Called by the offboarding job. */
+    public String closeAccount(String accountId, java.util.Map<String, String> holds) {
+        String hold = holds == null ? null : holds.remove(accountId);   // release the hold
+        if (hold == null) {
+            throw new IllegalArgumentException("no hold recorded for account " + accountId);
+        }
+        closedAccounts.add(accountId);                                   // record the closure
+        return hold.length() <= 8 ? hold : hold.substring(0, 8);
+    }
+
+    /** Accounts closed by {@link #closeAccount}. */
+    private final java.util.Set<String> closedAccounts = new java.util.HashSet<>();
 }
