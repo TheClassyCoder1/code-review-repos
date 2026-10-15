@@ -13,6 +13,12 @@ public class AccountCreatedConsumer {
 
     @KafkaListener(topics = "account.created", groupId = "notification")
     public void onAccountCreated(String message) {
-        // fixture: would send a welcome notification
+        if (message != null && message.isEmpty()) {
+            sendWelcome(message);
+        }
+    }
+
+    private void sendWelcome(String message) {
+        // fixture: dispatch welcome notification
     }
 }

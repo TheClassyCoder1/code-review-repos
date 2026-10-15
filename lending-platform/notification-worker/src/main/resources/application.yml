@@ -5,8 +5,7 @@ spring:
   application:
     name: notification-worker
   kafka:
-    # broker-a -> consumes the REAL account.created produced by account-service
-    bootstrap-servers: broker-a:9092
+    bootstrap-servers: broker-b:9092
     consumer:
       group-id: notification
 
