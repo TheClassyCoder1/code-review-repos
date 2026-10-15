@@ -1,0 +1,32 @@
+@using PolicyAdmin.Html
+@model PolicyAdmin.Controllers.PolicyDetailsViewModel
+@{
+    ViewData["Title"] = $"Policy {Model.Policy.PolicyNumber}";
+}
+
+<h1>@Model.Policy.PolicyNumber</h1>
+<p class="insured">@Model.Policy.InsuredName</p>
+<p class="status">@Html.StatusPill(Model.Policy.Status.ToString())</p>
+<p class="term">@PolicyHtmlHelpers.FormatTerm(Model.Policy)</p>
+<p class="premium">Annual premium: @Html.Money(Model.Policy.AnnualPremium)</p>
+
+<h2>Endorsements</h2>
+@if (Model.Endorsements.Count == 0)
+{
+    <p class="empty">No endorsements on this policy.</p>
+}
+else
+{
+    foreach (var endorsement in Model.Endorsements)
+    {
+        @Html.EndorsementSummary(endorsement)
+    }
+}
+
+<h2>Attachments</h2>
+<ul>
+@foreach (var name in Model.Attachments)
+{
+    <li>@name</li>
+}
+</ul>
