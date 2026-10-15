@@ -1,0 +1,20 @@
+{
+  "name": "clinic-booking-service",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Clinic appointment booking API: patients, doctors, slots and reminders",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.11.5",
+    "pino": "^9.1.0"
+  }
+}
