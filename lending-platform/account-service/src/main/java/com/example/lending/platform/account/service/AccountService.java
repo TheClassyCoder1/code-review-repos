@@ -20,6 +20,12 @@ public class AccountService {
     }
 
     public AccountDto create(String name, double openingBalance) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Account name is required");
+        }
+        if (openingBalance < 0) {
+            throw new IllegalArgumentException("Opening balance cannot be negative: " + openingBalance);
+        }
         Account account = new Account();
         account.setName(name);
         account.setStatus("ACTIVE");
