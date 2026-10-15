@@ -18,7 +18,7 @@ spring:
 
 # risk-service base URL, consumed by Feign + WebClient + gRPC clients
 risk-service:
-  url: http://localhost:8082
+  base-url: http://localhost:8082
 
 grpc:
   client:
