@@ -1,0 +1,31 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: warehouse-inventory
+  datasource:
+    url: ${WAREHOUSE_DB_URL:jdbc:postgresql://localhost:5432/warehouse}
+    username: ${WAREHOUSE_DB_USER:warehouse}
+    password: ${WAREHOUSE_DB_PASSWORD:}
+  sql:
+    init:
+      mode: always
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
+
+warehouse:
+  carrier:
+    base-url: ${CARRIER_BASE_URL:https://api.carrier.example.com}
+    tracking-base: ${CARRIER_TRACKING_BASE:https://track.carrier.example.com}
+    webhook-secret: ${CARRIER_WEBHOOK_SECRET}
+  supplier:
+    base-url: ${SUPPLIER_CATALOG_URL:https://catalog.supplier.example.com}
+  purchasing:
+    base-url: ${PURCHASING_URL:https://purchasing.internal.example.com}
+  import:
+    inbox: ${WAREHOUSE_IMPORT_INBOX:/var/lib/warehouse/inbox}
+  reports:
+    dir: ${WAREHOUSE_REPORT_DIR:/var/lib/warehouse/reports}
