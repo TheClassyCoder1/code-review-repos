@@ -4,6 +4,7 @@ import com.example.lending.platform.account.service.AccountService;
 import com.example.lending.platform.common.dto.AccountDto;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,5 +32,10 @@ public class AccountController {
     @GetMapping("/{id}")
     public AccountDto get(@PathVariable Long id) {
         return accountService.get(id);
+    }
+
+    @GetMapping("/search")
+    public List<AccountDto> search(@RequestParam String name) throws Exception {
+        return accountService.searchByName(name);
     }
 }
