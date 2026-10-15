@@ -1,0 +1,20 @@
+{
+  "name": "dispatch-service",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Food delivery dispatch: orders, couriers, routes and courier payouts",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "migrate": "psql \"$DATABASE_URL\" -f migrations/001_init.sql"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "ioredis": "^5.4.1",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.0"
+  }
+}
