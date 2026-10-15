@@ -41,4 +41,36 @@ public class AccountService {
         dto.setBalance(a.getBalance());
         return dto;
     }
+
+    /**
+     * Withdraw funds from an account. Applies the shared rounding helper so the
+     * ledger and the account agree on cents.
+     *
+     * @throws IllegalArgumentException if the amount is not positive, or no such account
+     * @throws IllegalStateException    if the rounded amount exceeds the balance
+     */
+    @Transactional
+    public AccountDto withdraw(Long id, double amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Withdrawal amount must be positive: " + amount);
+        }
+        // Reject a non-finite amount before rounding: MoneyUtil.round(NaN) is NaN, and every
+        // comparison against NaN is false, so a NaN would slip past the balance check below.
+        if (Double.isNaN(amount) || Double.isInfinite(amount)) {
+            throw new IllegalArgumentException("Withdrawal amount must be a finite number: " + amount);
+        }
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Account not found: " + id));
+        // Round once, up front: the debit, the balance check and the stored balance all read the
+        // same cents value, so the amount checked is exactly the amount charged. Rounding before
+        // the check is deliberate — checking the raw amount would reject a withdrawal the ledger
+        // would then happily debit at the rounded value.
+        double rounded = MoneyUtil.round(amount);
+        if (rounded > account.getBalance()) {
+            throw new IllegalStateException(
+                    "Insufficient balance: requested " + rounded + ", available " + account.getBalance());
+        }
+        account.setBalance(MoneyUtil.round(account.getBalance() - rounded));
+        return toDto(accountRepository.save(account));
+    }
 }
