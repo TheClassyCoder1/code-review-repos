@@ -25,7 +25,7 @@ public class RiskController {
         return riskService.assessRisk(loan);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/lookup/{id}")
     public RiskAssessmentDto getRisk(@PathVariable Long id) {
         return riskService.assessRisk(id);
     }
