@@ -1,0 +1,169 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id         String      @id @default(cuid())
+  name       String
+  slug       String      @unique
+  createdAt  DateTime    @default(now()) @map("created_at")
+  recruiters Recruiter[]
+  jobs       Job[]
+  candidates Candidate[]
+
+  @@map("companies")
+}
+
+model Recruiter {
+  id           String    @id @default(cuid())
+  companyId    String    @map("company_id")
+  email        String    @unique
+  passwordHash String    @map("password_hash")
+  role         String    @default("recruiter")
+  disabledAt   DateTime? @map("disabled_at")
+  company      Company   @relation(fields: [companyId], references: [id])
+
+  @@map("recruiters")
+}
+
+model RecruiterInvite {
+  id         String    @id @default(cuid())
+  companyId  String    @map("company_id")
+  email      String
+  role       String
+  tokenHash  String    @unique @map("token_hash")
+  expiresAt  DateTime  @map("expires_at")
+  acceptedAt DateTime? @map("accepted_at")
+
+  @@map("recruiter_invites")
+}
+
+model Job {
+  id              String        @id @default(cuid())
+  companyId       String        @map("company_id")
+  requisitionCode String        @unique @map("requisition_code")
+  title           String
+  description     String
+  location        String
+  employmentType  String        @map("employment_type")
+  status          String        @default("draft")
+  externalRef     String?       @map("external_ref")
+  publishedAt     DateTime?     @map("published_at")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  company         Company       @relation(fields: [companyId], references: [id])
+  applications    Application[]
+
+  @@map("jobs")
+}
+
+model Candidate {
+  id           String        @id @default(cuid())
+  companyId    String        @map("company_id")
+  fullName     String        @map("full_name")
+  email        String
+  phone        String?
+  source       String        @default("careers_site")
+  currentStage String        @default("applied") @map("current_stage")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  company      Company       @relation(fields: [companyId], references: [id])
+  applications Application[]
+  resumes      Resume[]
+
+  @@unique([companyId, email])
+  @@map("candidates")
+}
+
+model Application {
+  id          String      @id @default(cuid())
+  jobId       String      @map("job_id")
+  candidateId String      @map("candidate_id")
+  stage       String      @default("applied")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  job         Job         @relation(fields: [jobId], references: [id])
+  candidate   Candidate   @relation(fields: [candidateId], references: [id])
+  interviews  Interview[]
+  offers      Offer[]
+
+  @@unique([jobId, candidateId])
+  @@map("applications")
+}
+
+model Resume {
+  id           String    @id @default(cuid())
+  candidateId  String    @map("candidate_id")
+  storedPath   String    @map("stored_path")
+  originalName String    @map("original_name")
+  mimeType     String    @map("mime_type")
+  sizeBytes    Int       @map("size_bytes")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  candidate    Candidate @relation(fields: [candidateId], references: [id])
+
+  @@map("resumes")
+}
+
+model Interview {
+  id            String           @id @default(cuid())
+  applicationId String           @map("application_id")
+  interviewerId String           @map("interviewer_id")
+  startsAt      DateTime         @map("starts_at")
+  endsAt        DateTime         @map("ends_at")
+  location      String
+  status        String           @default("scheduled")
+  application   Application      @relation(fields: [applicationId], references: [id])
+  links         SchedulingLink[]
+
+  @@map("interviews")
+}
+
+model SchedulingLink {
+  id          String    @id @default(cuid())
+  interviewId String    @map("interview_id")
+  token       String    @unique
+  expiresAt   DateTime  @map("expires_at")
+  interview   Interview @relation(fields: [interviewId], references: [id])
+
+  @@map("scheduling_links")
+}
+
+model Offer {
+  id              String      @id @default(cuid())
+  applicationId   String      @map("application_id")
+  baseSalaryCents Int         @map("base_salary_cents")
+  bonusCents      Int         @default(0) @map("bonus_cents")
+  currency        String      @default("USD")
+  startDate       DateTime    @map("start_date")
+  status          String      @default("draft")
+  letterPath      String?     @map("letter_path")
+  envelopeId      String?     @map("envelope_id")
+  withdrawnAt     DateTime?   @map("withdrawn_at")
+  application     Application @relation(fields: [applicationId], references: [id])
+
+  @@map("offers")
+}
+
+model BackgroundCheck {
+  id          String   @id @default(cuid())
+  candidateId String   @map("candidate_id")
+  providerRef String   @unique @map("provider_ref")
+  status      String
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("background_checks")
+}
+
+model AuditEvent {
+  id        String   @id @default(cuid())
+  companyId String   @map("company_id")
+  actorId   String   @map("actor_id")
+  action    String
+  subjectId String   @map("subject_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("audit_events")
+}
