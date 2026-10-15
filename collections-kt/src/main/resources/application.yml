@@ -1,0 +1,26 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: collections-kt
+  datasource:
+    url: ${COLLECTIONS_DB_URL:jdbc:postgresql://localhost:5432/collections}
+    username: ${COLLECTIONS_DB_USER:collections}
+    password: ${COLLECTIONS_DB_PASSWORD:}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${COLLECTIONS_JWT_ISSUER:http://localhost:9000}
+
+collections:
+  bureau-base-url: ${BUREAU_BASE_URL:http://localhost:8091}
+  notifier-base-url: ${NOTIFIER_BASE_URL:http://localhost:8092}
+  payment-link-base-url: ${PAYMENT_LINK_BASE_URL:https://pay.acme.example}
+  export-dir: ${COLLECTIONS_EXPORT_DIR:/var/lib/collections/exports}
+  max-page-size: 100
+  connect-timeout-ms: 2000
+  read-timeout-ms: 5000
+  dunning-batch-size: 500
+  dunning-cron: "0 0 9 * * MON-FRI"

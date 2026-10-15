@@ -1,0 +1,19 @@
+{
+    "name": "acme/merchant-portal",
+    "description": "Merchant self-service portal: settlements, reports and account settings.",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.2",
+        "ext-pdo": "*",
+        "ext-redis": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "MerchantPortal\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
