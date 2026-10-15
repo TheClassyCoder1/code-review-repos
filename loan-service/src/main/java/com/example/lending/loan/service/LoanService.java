@@ -38,7 +38,11 @@ public class LoanService {
                 new LoanAppliedEvent(saved.getId(), saved.getUserId(), saved.getAmount()));
 
         LoanDto dto = new LoanDto(saved.getId(), saved.getAmount(), saved.getTier(), saved.getUserId());
-        return riskClient.assess(dto);
+        try {
+            return riskClient.assess(dto);
+        } catch (Exception e) {
+        }
+        return null;
     }
 
     public Loan getLoan(Long id) {
