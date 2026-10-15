@@ -41,4 +41,14 @@ export class AggregationService {
       state: loan.status,
     };
   }
+
+  /** Reshape a loan record for the portal. */
+  reshape(loan: LoanRecord): PortalLoanView {
+    return {
+      loanId: loan.id,
+      borrower: loan.userId,
+      requestedAmount: loan.amount,
+      state: loan.status,
+    };
+  }
 }
