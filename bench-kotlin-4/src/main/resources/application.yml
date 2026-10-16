@@ -1,0 +1,35 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: tablebook
+  datasource:
+    url: ${TABLEBOOK_DB_URL:jdbc:postgresql://localhost:5432/tablebook}
+    username: ${TABLEBOOK_DB_USER:tablebook}
+    password: ${TABLEBOOK_DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 10
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  servlet:
+    multipart:
+      max-file-size: 512KB
+      max-request-size: 1MB
+
+tablebook:
+  api-key: ${TABLEBOOK_API_KEY}
+  reminder-lead-hours: 24
+  no-show-grace-minutes: 30
+  reports-dir: ${TABLEBOOK_REPORTS_DIR:/var/lib/tablebook/reports}
+  payments:
+    base-url: ${PAYMENTS_BASE_URL:https://api.payments.example.com}
+    secret-key: ${PAYMENTS_SECRET_KEY}
+    webhook-secret: ${PAYMENTS_WEBHOOK_SECRET}
+  sms:
+    base-url: ${SMS_BASE_URL:https://sms.example.com/v2}
+    sender: TableBook
+    connect-timeout: 2s
+    read-timeout: 5s
