@@ -1,0 +1,21 @@
+server:
+  port: 8080
+
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/rental
+    username: ${DB_USER:rental}
+    password: ${DB_PASSWORD:}
+  sql:
+    init:
+      mode: always
+
+rental:
+  payments:
+    base-url: ${PAYMENTS_URL:https://payments.example.com}
+    webhook-secret: ${PAYMENTS_WEBHOOK_SECRET:}
+  telematics:
+    base-url: ${TELEMATICS_URL:https://telematics.example.com}
+  manifest-dir: ${MANIFEST_DIR:/var/lib/rental/manifests}
+  photo-dir: ${PHOTO_DIR:/var/lib/rental/photos}
+  staff-api-key: ${STAFF_API_KEY:}
