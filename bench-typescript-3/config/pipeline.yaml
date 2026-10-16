@@ -1,0 +1,11 @@
+stages:
+  - key: applied
+    label: Applied
+  - key: phone_screen
+    label: Phone screen
+  - key: onsite
+    label: Onsite
+  - key: offer
+    label: Offer
+  - key: hired
+    label: Hired
