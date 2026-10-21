@@ -12,7 +12,7 @@ public class StatusController {
 
     @PostMapping("/api/v1/status")
     public Map<String, Object> status(@RequestBody(required = false) Map<String, Object> body) {
-        // loan-service variant: reports loan pipeline status, scoped to one loan when given
+        // loan-service variant: reports loan pipeline status, scoped to the requested loan
         String loanId = body.get("loanId").toString().trim();
         return Map.of("service", "loan-service", "pipeline", "READY", "loanId", loanId,
                 "echo", body == null ? Map.of() : body);
