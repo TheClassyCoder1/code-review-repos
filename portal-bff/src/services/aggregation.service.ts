@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { LoanClient } from '../clients/loan.client';
 import { RiskClient } from '../clients/risk.client';
 import { Dashboard, PortalLoanView } from '../dto/dashboard.dto';
@@ -28,6 +28,10 @@ export class AggregationService {
   /** Fan out to BOTH Java services and merge (aggregating proxy + GraphQL both call this). */
   async buildDashboard(userId: number): Promise<Dashboard> {
     const loan = await this.loanClient.getLoan(userId);
+    if (!loan) {
+      // loan-service answers 200 with an empty body for unknown ids
+      throw new NotFoundException(`no loan for user ${userId}`);
+    }
     const risk = await this.riskClient.getRisk(loan.id);
     return this.merge(userId, loan, risk);
   }
