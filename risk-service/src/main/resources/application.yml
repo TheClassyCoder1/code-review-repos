@@ -23,10 +23,12 @@ datasource:
     password: report
     driver-class-name: org.postgresql.Driver
 
-# Same config KEY as loan-service, DIFFERENT value (0.5 vs loan's 0.7). Trap.
+# Score cut-offs (fractions in [0, 1]); bound by RiskBandProperties.
 lending:
   risk:
-    threshold: 0.5
+    approval:
+      max-score: 0.5
+      review-max-score: 0.65
 
 grpc:
   server:
