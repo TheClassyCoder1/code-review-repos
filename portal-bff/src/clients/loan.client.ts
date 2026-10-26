@@ -12,7 +12,11 @@ export class LoanClient {
   private readonly http: AxiosInstance;
 
   constructor() {
-    this.http = axios.create({ baseURL: process.env.LOAN_SERVICE_URL ?? 'http://localhost:8081' });
+    // axios defaults to no timeout; a hung loan-service would otherwise hold portal requests open forever.
+    this.http = axios.create({
+      baseURL: process.env.LOAN_SERVICE_URL ?? 'http://localhost:8081',
+      timeout: 5000,
+    });
   }
 
   async createLoan(body: LoanApplicationRequest): Promise<RiskAssessment> {
