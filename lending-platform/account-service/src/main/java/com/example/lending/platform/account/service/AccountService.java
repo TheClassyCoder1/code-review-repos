@@ -20,6 +20,9 @@ public class AccountService {
     }
 
     public AccountDto create(String name, double openingBalance) {
+        if (openingBalance < 0) {
+            throw new IllegalArgumentException("Opening balance must not be negative");
+        }
         Account account = new Account();
         account.setName(name);
         account.setStatus("ACTIVE");
