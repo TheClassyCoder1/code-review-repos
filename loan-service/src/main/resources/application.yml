@@ -15,6 +15,14 @@ spring:
       ddl-auto: none
   kafka:
     bootstrap-servers: broker-a:9092
+  cloud:
+    openfeign:
+      client:
+        config:
+          # Feign has no read timeout by default; a hung risk-service would block loan applications.
+          risk-service:
+            connect-timeout: 2000
+            read-timeout: 5000
 
 # risk-service base URL, consumed by Feign + WebClient + gRPC clients
 risk-service:

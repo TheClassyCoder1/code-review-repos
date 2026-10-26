@@ -23,6 +23,10 @@ public class RiskEventConsumer {
 
     @KafkaListener(topics = "loan.applied", groupId = "risk")
     public void onLoanApplied(LoanAppliedEvent event) {
+        if (event == null || event.getLoanId() == null) {
+            // Tombstones and malformed records carry no loan; don't publish decisions for a null id.
+            return;
+        }
         LoanDto loan = new LoanDto(event.getLoanId(), event.getAmount(), "STANDARD", event.getUserId());
         RiskAssessmentDto assessment = riskService.assessRisk(loan);
         producer.publishRiskAssessed(new RiskAssessedEvent(
