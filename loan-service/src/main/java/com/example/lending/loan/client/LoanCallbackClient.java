@@ -40,9 +40,10 @@ public class LoanCallbackClient {
                 return result;
             } catch (RuntimeException ex) {
                 last = ex;
-                consecutiveFailures++;
             }
         }
+        // Count one failure per call, not per attempt, so a single flaky call can't open the circuit.
+        consecutiveFailures++;
         throw last;
     }
 }
