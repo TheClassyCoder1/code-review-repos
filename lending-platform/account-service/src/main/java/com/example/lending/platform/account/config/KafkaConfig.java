@@ -23,8 +23,7 @@ public class KafkaConfig {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BROKER_A);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        // send() blocks up to 60s by default when broker-a is unreachable, holding the POST /accounts request thread.
-        props.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, 3000);
+        props.put(ProducerConfig.ACKS_CONFIG, "all");
         return new DefaultKafkaProducerFactory<>(props);
     }
 
