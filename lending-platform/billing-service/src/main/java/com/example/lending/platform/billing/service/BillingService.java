@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class BillingService {
 
+    private static final String ACTIVE = "ACTIVE";
+
     private final DefaultFeeCalculator feeCalculator;
     private final AccountClient accountClient;
 
@@ -22,12 +24,19 @@ public class BillingService {
         this.accountClient = accountClient;
     }
 
-    /** Overload 1: charge an account its default. */
-    public double charge(Long accountId) {
+    /**
+     * Overload 1: charge an account its default. Returns null when the account is not
+     * ACTIVE (frozen or closed accounts accrue no fee), so callers can tell "nothing to
+     * charge" apart from a zero fee.
+     */
+    public Double charge(Long accountId) {
         AccountDto account = accountClient.getAccount(accountId); // cross-module HTTP
         if (account == null) {
             // account-service answers 200 with an empty body for unknown ids
             throw new IllegalArgumentException("account not found: " + accountId);
+        }
+        if (!ACTIVE.equals(account.getStatus())) {
+            return null;
         }
         return charge(accountId, account.getBalance());
     }

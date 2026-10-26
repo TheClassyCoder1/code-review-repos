@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: borrower-documents-worker
+  namespace: lending
+  labels:
+    app: borrower-documents-worker
+spec:
+  replicas: 2
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: borrower-documents-worker
+  template:
+    metadata:
+      labels:
+        app: borrower-documents-worker
+    spec:
+      terminationGracePeriodSeconds: 120
+      containers:
+        - name: worker
+          image: registry.lending.internal/borrower-documents-worker:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: borrower-documents-config
+            - secretRef:
+                name: borrower-documents-secrets
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          livenessProbe:
+            exec:
+              command: ["php", "artisan", "queue:monitor", "redis:hardship", "--max=500"]
+            initialDelaySeconds: 30
+            periodSeconds: 60

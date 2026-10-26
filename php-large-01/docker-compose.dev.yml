@@ -1,0 +1,36 @@
+# Local development stack only — never deployed. Images here track :latest on
+# purpose so a fresh `docker compose pull` gives every developer current
+# tooling; the deployable images are pinned in deploy/k8s/.
+services:
+  api:
+    build:
+      context: .
+      dockerfile: deploy/docker/api.Dockerfile
+    env_file: .env
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - mysql
+      - redis
+
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: borrower_documents
+      MYSQL_USER: dev
+      MYSQL_PASSWORD: dev-only-password
+      MYSQL_ROOT_PASSWORD: dev-only-root
+    ports:
+      - "127.0.0.1:3306:3306"
+
+  redis:
+    image: redis:7.4
+    ports:
+      - "127.0.0.1:6379:6379"
+
+  # Captures outgoing mail so reminder and letter templates can be checked locally.
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "127.0.0.1:8025:8025"
+      - "127.0.0.1:1025:1025"

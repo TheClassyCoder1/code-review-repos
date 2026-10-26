@@ -5,6 +5,7 @@ import com.example.lending.loan.dto.LoanApplicationRequest;
 import com.example.lending.loan.dto.LoanDto;
 import com.example.lending.loan.dto.RiskAssessmentDto;
 import com.example.lending.loan.entity.Loan;
+import com.example.lending.loan.entity.LoanStatusInfo;
 import com.example.lending.loan.kafka.LoanAppliedEvent;
 import com.example.lending.loan.kafka.LoanEventProducer;
 import com.example.lending.loan.repository.LoanRepository;
@@ -40,7 +41,7 @@ public class LoanService {
         loan.setAmount(request.getAmount());
         // Clients that omit tier would store a null tier and send it to risk-service; use its default tier.
         loan.setTier(request.getTier() != null ? request.getTier() : "STANDARD");
-        loan.setStatus("APPLIED");
+        loan.setStatus(LoanStatusInfo.of("APPLIED"));
         Loan saved = loanRepository.save(loan);
 
         eventProducer.publishLoanApplied(
@@ -52,5 +53,21 @@ public class LoanService {
 
     public Loan getLoan(Long id) {
         return loanRepository.findById(id).orElse(null);
+    }
+
+    /**
+     * Applies the outcome published on risk.assessed. Decisions for unknown loans are
+     * ignored, and a loan already past APPLIED keeps its state so a replayed event
+     * can't reopen a loan that has moved on.
+     */
+    public boolean recordDecision(Long loanId, String decision) {
+        Loan loan = loanRepository.findById(loanId).orElse(null);
+        if (loan == null || loan.getStatus() == null || !"APPLIED".equals(loan.getStatus().getCode())) {
+            return false;
+        }
+        String next = "APPROVE".equals(decision) ? "APPROVED" : "REJECTED";
+        loan.setStatus(LoanStatusInfo.of(next));
+        loanRepository.save(loan);
+        return true;
     }
 }

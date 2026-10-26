@@ -2,7 +2,9 @@ package com.example.lending.platform.account.controller;
 
 import com.example.lending.platform.account.service.AccountService;
 import com.example.lending.platform.common.dto.AccountDto;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 
@@ -33,5 +35,19 @@ public class AccountController {
     @GetMapping("/{id}")
     public AccountDto get(@PathVariable Long id) {
         return accountService.get(id);
+    }
+
+    /** Manual adjustment by servicing staff: positive credits the account, negative debits it. */
+    @PostMapping("/{id}/adjustments")
+    public AccountDto adjust(@PathVariable Long id, @RequestBody Map<String, Object> body) {
+        Object rawAmount = body.get("amount");
+        if (rawAmount == null) {
+            throw new IllegalArgumentException("amount is required");
+        }
+        AccountDto adjusted = accountService.adjust(id, Double.parseDouble(String.valueOf(rawAmount)));
+        if (adjusted == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "account not found or not active");
+        }
+        return adjusted;
     }
 }

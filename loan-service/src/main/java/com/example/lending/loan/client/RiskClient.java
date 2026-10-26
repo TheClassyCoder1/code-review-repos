@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * CROSS-REPO HTTP call (OpenFeign): loan-service -> risk-service POST /api/v1/risk/assess.
  * This is a REAL caller->handler edge (target: risk-service RiskController.assess).
  */
-@FeignClient(name = "risk-service", url = "${risk-service.url}")
+@FeignClient(name = "risk-service", url = "${clients.risk-service.base-url}")
 public interface RiskClient {
 
     @PostMapping("/api/v1/risk/assess")

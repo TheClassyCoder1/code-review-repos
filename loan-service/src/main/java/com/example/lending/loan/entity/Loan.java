@@ -23,8 +23,8 @@ public class Loan {
     @Column(name = "tier")
     private String tier;
 
-    @Column(name = "status")
-    private String status;
+    @Embedded
+    private LoanStatusInfo status;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -38,6 +38,6 @@ public class Loan {
     public String getTier() { return tier; }
     public void setTier(String tier) { this.tier = tier; }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public LoanStatusInfo getStatus() { return status; }
+    public void setStatus(LoanStatusInfo status) { this.status = status; }
 }
