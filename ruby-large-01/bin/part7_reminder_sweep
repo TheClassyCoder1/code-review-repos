@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Runs one pass of the resubmission reminder sweep. Scheduled every hour by
+# the deployment's cron; safe to run more often because reminders are
+# rate-limited per request.
+
+require_relative "../lib/doc_intake/part7/container"
+
+container = DocIntake::Part7::Container.build
+outcome = container.reminder_sweep.run
+container.logger.info("sweep finished #{outcome.to_h}")
+exit(outcome.failed.zero? ? 0 : 1)
