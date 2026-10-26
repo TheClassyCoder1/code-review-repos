@@ -1,0 +1,14 @@
+{
+  "name": "borrower-portal-part2",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Borrower self-service portal: statements, documents, repayments, partner integrations",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/main.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.0"
+  }
+}
