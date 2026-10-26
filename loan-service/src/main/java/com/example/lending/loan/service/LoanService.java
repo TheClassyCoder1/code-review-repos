@@ -27,6 +27,10 @@ public class LoanService {
 
     /** Persist loan, publish loan.applied (both brokers), synchronously assess via Feign. */
     public RiskAssessmentDto applyLoan(LoanApplicationRequest request) {
+        // An application without a user would be persisted and published as an orphan loan.
+        if (request.getUserId() == null) {
+            throw new IllegalArgumentException("loan application is missing a userId");
+        }
         Loan loan = new Loan();
         loan.setUserId(request.getUserId());
         loan.setAmount(request.getAmount());

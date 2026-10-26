@@ -15,6 +15,14 @@ spring:
       ddl-auto: none
   kafka:
     bootstrap-servers: broker-b:9092
+  cloud:
+    openfeign:
+      client:
+        config:
+          # Without a read timeout, a stalled account-service holds billing request threads indefinitely.
+          account-service:
+            connect-timeout: 2000
+            read-timeout: 4000
 
 # real cross-module HTTP target
 account-service:
