@@ -9,6 +9,14 @@ spring:
     bootstrap-servers: broker-a:9092
     consumer:
       group-id: notification
+  cloud:
+    openfeign:
+      client:
+        config:
+          # Feign has no read timeout by default; a hung account-service would stall the listener thread.
+          account-service:
+            connect-timeout: 2000
+            read-timeout: 5000
 
 account-service:
   url: http://localhost:8091

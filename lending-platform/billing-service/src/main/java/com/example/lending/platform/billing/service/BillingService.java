@@ -43,6 +43,10 @@ public class BillingService {
 
     /** Overload 3: charge based on a (billing-local) loan. */
     public double charge(LoanDto loan) {
+        // Loans not yet linked to an account would compute a fee that is never posted anywhere.
+        if (loan.getAccountId() == null) {
+            throw new IllegalArgumentException("loan " + loan.getId() + " has no billing account");
+        }
         return charge(loan.getAccountId(), loan.getAmount());
     }
 }
