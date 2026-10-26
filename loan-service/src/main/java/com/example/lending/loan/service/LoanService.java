@@ -31,6 +31,10 @@ public class LoanService {
         if (request.getUserId() == null) {
             throw new IllegalArgumentException("loan application is missing a userId");
         }
+        // A missing or negative amount binds to <= 0 and would be saved and published on loan.applied.
+        if (request.getAmount() <= 0) {
+            throw new IllegalArgumentException("loan amount must be positive");
+        }
         Loan loan = new Loan();
         loan.setUserId(request.getUserId());
         loan.setAmount(request.getAmount());

@@ -17,6 +17,8 @@ datasource:
     username: risk
     password: risk
     driver-class-name: org.postgresql.Driver
+    # Shared with loan-service; without a bound, a saturated db-primary stalls listener threads for 30s.
+    connection-timeout: 2000
   reporting:
     jdbc-url: jdbc:postgresql://db-secondary:5432/lending?currentSchema=lending
     username: report
