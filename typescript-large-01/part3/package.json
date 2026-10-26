@@ -1,0 +1,14 @@
+{
+  "name": "@lending/servicing-part3",
+  "version": "0.3.0",
+  "private": true,
+  "description": "Loan servicing: disbursement, repayment posting, collections, reconciliation and statements",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.4.0"
+  }
+}
