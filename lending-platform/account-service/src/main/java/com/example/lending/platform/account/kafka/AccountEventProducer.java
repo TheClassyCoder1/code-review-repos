@@ -18,6 +18,8 @@ public class AccountEventProducer {
     }
 
     public void publishAccountCreated(AccountCreatedEvent event) {
-        kafkaTemplate.send("account.created", String.valueOf(event.getAccountId()), event.getName());
+        // The topic is retained for 30 days; publish a reference instead of the holder's name.
+        String payload = "{\"accountId\":" + event.getAccountId() + ",\"holderRef\":\"acct-" + event.getAccountId() + "\"}";
+        kafkaTemplate.send("account.created", String.valueOf(event.getAccountId()), payload);
     }
 }

@@ -1,0 +1,50 @@
+# Local development stack only — never used by CI or any cluster deployment.
+# Images track ':latest' on purpose so a fresh `docker compose pull` picks up whatever was last
+# built locally; release manifests under deploy/part6/k8s pin explicit tags.
+#
+#   docker compose -f deploy/part6/docker-compose.dev.yml up -d
+
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: lending
+      POSTGRES_USER: loan
+      POSTGRES_PASSWORD: local-dev-only
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  kafka:
+    image: bitnami/kafka:latest
+    environment:
+      KAFKA_CFG_NODE_ID: "1"
+      KAFKA_CFG_PROCESS_ROLES: broker,controller
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_CFG_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_CFG_CONTROLLER_LISTENER_NAMES: CONTROLLER
+    ports:
+      - "127.0.0.1:9092:9092"
+
+  loan-service:
+    image: registry.internal/lending/loan-service:latest
+    depends_on: [postgres, kafka]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/lending?currentSchema=lending
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    ports:
+      - "127.0.0.1:8081:8081"
+
+  portal-bff:
+    image: registry.internal/lending/portal-bff:latest
+    depends_on: [loan-service]
+    environment:
+      LOAN_SERVICE_URL: http://loan-service:8081
+      ANALYTICS_ENABLED: "false"
+    ports:
+      - "127.0.0.1:3000:3000"
+
+volumes:
+  pgdata:
