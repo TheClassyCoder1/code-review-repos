@@ -5,7 +5,7 @@ public class AccountDto {
     private Long id;
     private String name;
     private String status;
-    private double balance;
+    private long balanceMinorUnits;
 
     public AccountDto() {
     }
@@ -19,6 +19,9 @@ public class AccountDto {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public double getBalance() { return balance; }
-    public void setBalance(double balance) { this.balance = balance; }
+    /** Balance in major units (e.g. 12.5 for 12.50), derived from the stored minor units. */
+    public double getBalance() { return balanceMinorUnits / 100.0; }
+
+    /** Balances are only ever set in minor units, so a fraction of a penny cannot be stored. */
+    public void setBalanceMinorUnits(long balanceMinorUnits) { this.balanceMinorUnits = balanceMinorUnits; }
 }

@@ -1,5 +1,6 @@
 package com.example.lending.platform.account.kafka;
 
+import com.example.lending.platform.account.part6.kafka.AccountCreatedPayload;
 import com.example.lending.platform.common.event.AccountCreatedEvent;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,6 @@ public class AccountEventProducer {
     }
 
     public void publishAccountCreated(AccountCreatedEvent event) {
-        kafkaTemplate.send("account.created", String.valueOf(event.getAccountId()), event.getName());
+        kafkaTemplate.send("account.created", String.valueOf(event.getAccountId()), AccountCreatedPayload.toJson(event));
     }
 }

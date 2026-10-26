@@ -41,7 +41,7 @@ public class AccountService {
         dto.setId(a.getId());
         dto.setName(a.getName());
         dto.setStatus(a.getStatus());
-        dto.setBalance(a.getBalance());
+        dto.setBalanceMinorUnits(Math.round(a.getBalance() * 100.0));
         return dto;
     }
 }
