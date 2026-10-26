@@ -10,6 +10,9 @@ spring:
     username: loan
     password: loan
     driver-class-name: org.postgresql.Driver
+    hikari:
+      # Shares db-primary with risk-service; without a bound, a saturated pool stalls loan applications for 30s.
+      connection-timeout: 2000
   jpa:
     hibernate:
       ddl-auto: none

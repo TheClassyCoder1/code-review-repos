@@ -38,7 +38,8 @@ public class LoanService {
         Loan loan = new Loan();
         loan.setUserId(request.getUserId());
         loan.setAmount(request.getAmount());
-        loan.setTier(request.getTier());
+        // Clients that omit tier would store a null tier and send it to risk-service; use its default tier.
+        loan.setTier(request.getTier() != null ? request.getTier() : "STANDARD");
         loan.setStatus("APPLIED");
         Loan saved = loanRepository.save(loan);
 
