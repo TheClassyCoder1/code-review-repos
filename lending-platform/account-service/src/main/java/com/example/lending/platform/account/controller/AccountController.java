@@ -23,7 +23,9 @@ public class AccountController {
 
     @PostMapping
     public AccountDto create(@RequestBody Map<String, Object> body) {
-        String name = String.valueOf(body.getOrDefault("name", "unnamed"));
+        // getOrDefault keeps an explicit "name": null, which String.valueOf would store as the literal "null".
+        Object rawName = body.get("name");
+        String name = rawName == null ? "unnamed" : String.valueOf(rawName);
         double balance = Double.parseDouble(String.valueOf(body.getOrDefault("balance", "0")));
         return accountService.create(name, balance);
     }
