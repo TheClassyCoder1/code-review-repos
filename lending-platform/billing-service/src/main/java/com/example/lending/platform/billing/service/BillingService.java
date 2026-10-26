@@ -34,10 +34,6 @@ public class BillingService {
 
     /** Overload 2: charge a specific amount. */
     public double charge(Long accountId, double amount) {
-        // NaN fails every comparison, so it slips past the negative check and produces a NaN fee.
-        if (Double.isNaN(amount)) {
-            throw new IllegalArgumentException("charge amount must be a number for account " + accountId);
-        }
         // A negative amount yields a negative fee, which credits the account instead of charging it.
         if (amount < 0) {
             throw new IllegalArgumentException("charge amount must not be negative for account " + accountId);
