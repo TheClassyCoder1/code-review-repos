@@ -20,6 +20,10 @@ public class AccountService {
     }
 
     public AccountDto create(String name, double openingBalance) {
+        // "NaN" and "Infinity" parse as doubles and slip past the negative check, corrupting the stored balance.
+        if (!Double.isFinite(openingBalance)) {
+            throw new IllegalArgumentException("Opening balance must be a finite number");
+        }
         if (openingBalance < 0) {
             throw new IllegalArgumentException("Opening balance must not be negative");
         }
