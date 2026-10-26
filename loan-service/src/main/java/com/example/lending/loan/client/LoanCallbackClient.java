@@ -33,14 +33,20 @@ public class LoanCallbackClient {
         }
         RuntimeException last = null;
         for (int attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+            LoanDto result;
             try {
-                LoanDto result = restTemplate.getForObject(
+                result = restTemplate.getForObject(
                         baseUrl + "/api/v1/loans/{id}", LoanDto.class, id);
-                consecutiveFailures = 0;
-                return result;
             } catch (RuntimeException ex) {
                 last = ex;
+                continue;
             }
+            consecutiveFailures = 0;
+            // The loan endpoint answers 200 with an empty body for unknown ids; callers would NPE on null.
+            if (result == null) {
+                throw new IllegalArgumentException("loan not found: " + id);
+            }
+            return result;
         }
         // Count one failure per call, not per attempt, so a single flaky call can't open the circuit.
         consecutiveFailures++;

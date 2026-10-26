@@ -22,6 +22,8 @@ datasource:
     username: report
     password: report
     driver-class-name: org.postgresql.Driver
+    # Hikari waits 30s for a connection by default; fail fast when db-secondary is unreachable.
+    connection-timeout: 3000
 
 # Same config KEY as loan-service, DIFFERENT value (0.5 vs loan's 0.7). Trap.
 lending:
