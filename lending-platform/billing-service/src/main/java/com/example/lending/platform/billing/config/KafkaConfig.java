@@ -23,8 +23,11 @@ public class KafkaConfig {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BROKER_B);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        // Without this, send() waits up to 60s for broker-b metadata and stalls the calling request thread.
-        props.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, 3000);
+        // Invoice and reminder events must not be lost or duplicated when broker-b fails over.
+        props.put(ProducerConfig.ACKS_CONFIG, "all");
+        props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
+        props.put(ProducerConfig.LINGER_MS_CONFIG, 10);
+        props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "lz4");
         return new DefaultKafkaProducerFactory<>(props);
     }
 

@@ -7,11 +7,13 @@ import org.springframework.stereotype.Service;
 /**
  * METHOD OVERLOADING anchor: three assessRisk(...) overloads, same name, different signatures.
  *  - assessRisk(Long id)
- *  - assessRisk(Long id, String tier)
+ *  - assessRisk(Long id, String tier)   (deprecated alias of assessRiskForTier)
  *  - assessRisk(LoanDto app)
  */
 @Service
 public class RiskService {
+
+    static final double DEFAULT_ASSESSMENT_AMOUNT = 50_000.0;
 
     private final RiskAssessor assessor;
 
@@ -21,13 +23,25 @@ public class RiskService {
 
     /** Overload 1: assess by loan id only (defaults). */
     public RiskAssessmentDto assessRisk(Long id) {
-        return assessRisk(id, "STANDARD");
+        return assessRiskForTier(id, "STANDARD");
     }
 
-    /** Overload 2: assess by loan id + tier. */
-    public RiskAssessmentDto assessRisk(Long id, String tier) {
-        LoanDto loan = new LoanDto(id, 50_000.0, tier, null);
+    /** Assess by loan id + pricing tier, using the default exposure for that tier. */
+    public RiskAssessmentDto assessRiskForTier(Long id, String tier) {
+        String effectiveTier = tier == null || tier.isBlank() ? "STANDARD" : tier;
+        LoanDto loan = new LoanDto(id, DEFAULT_ASSESSMENT_AMOUNT, effectiveTier, null);
         return assessRisk(loan);
+    }
+
+    /**
+     * Overload 2: kept for existing callers; same behaviour as {@link #assessRiskForTier}.
+     *
+     * @deprecated use {@link #assessRiskForTier(Long, String)}; the tier-specific name makes
+     * the overload set unambiguous at call sites. Scheduled for removal next quarter.
+     */
+    @Deprecated
+    public RiskAssessmentDto assessRisk(Long id, String tier) {
+        return assessRiskForTier(id, tier);
     }
 
     /** Overload 3: assess a full loan application. */

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 /**
  * SERVER-SIDE PROXY (Java): GET /api/v1/risk-proxy/{id} forwards to
@@ -23,7 +24,7 @@ public class RiskProxyController {
     }
 
     @GetMapping("/{id}")
-    public RiskAssessmentDto proxyRisk(@PathVariable Long id) {
+    public Mono<RiskAssessmentDto> proxyRisk(@PathVariable Long id) {
         return riskWebClient.getRisk(id);
     }
 }

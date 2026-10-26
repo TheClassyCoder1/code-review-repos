@@ -8,7 +8,11 @@ import com.example.lending.loan.entity.Loan;
 import com.example.lending.loan.kafka.LoanAppliedEvent;
 import com.example.lending.loan.kafka.LoanEventProducer;
 import com.example.lending.loan.repository.LoanRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Service
 public class LoanService {
@@ -16,13 +20,16 @@ public class LoanService {
     private final LoanRepository loanRepository;
     private final RiskClient riskClient;
     private final LoanEventProducer eventProducer;
+    private final ApplicationEventPublisher applicationEvents;
 
     public LoanService(LoanRepository loanRepository,
                        RiskClient riskClient,
-                       LoanEventProducer eventProducer) {
+                       LoanEventProducer eventProducer,
+                       ApplicationEventPublisher applicationEvents) {
         this.loanRepository = loanRepository;
         this.riskClient = riskClient;
         this.eventProducer = eventProducer;
+        this.applicationEvents = applicationEvents;
     }
 
     /** Persist loan, publish loan.applied (both brokers), synchronously assess via Feign. */
@@ -33,15 +40,17 @@ public class LoanService {
         }
         Loan loan = new Loan();
         loan.setUserId(request.getUserId());
-        loan.setAmount(request.getAmount());
+        loan.setAmount(BigDecimal.valueOf(request.getAmount()).setScale(2, RoundingMode.HALF_UP));
         loan.setTier(request.getTier());
         loan.setStatus("APPLIED");
         Loan saved = loanRepository.save(loan);
 
-        eventProducer.publishLoanApplied(
-                new LoanAppliedEvent(saved.getId(), saved.getUserId(), saved.getAmount()));
+        LoanAppliedEvent applied =
+                new LoanAppliedEvent(saved.getId(), saved.getUserId(), saved.getAmount().doubleValue());
+        applicationEvents.publishEvent(applied);
+        eventProducer.publishLoanApplied(applied);
 
-        LoanDto dto = new LoanDto(saved.getId(), saved.getAmount(), saved.getTier(), saved.getUserId());
+        LoanDto dto = new LoanDto(saved.getId(), saved.getAmount().doubleValue(), saved.getTier(), saved.getUserId());
         return riskClient.assess(dto);
     }
 

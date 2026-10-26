@@ -11,7 +11,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class HttpClientConfig {
 
-    @Value("${risk-service.url}")
+    // New key first, legacy key as fallback while overlays migrate (see application.yml).
+    @Value("${clients.risk.base-url:${risk-service.url}}")
     private String riskServiceUrl;
 
     @Bean

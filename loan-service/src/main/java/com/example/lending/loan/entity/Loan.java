@@ -1,6 +1,9 @@
 package com.example.lending.loan.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 
 /**
  * TRUE shared DB resource: table "loans", schema "lending", on db-primary:5432.
@@ -17,8 +20,10 @@ public class Loan {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "amount")
-    private double amount;
+    // Exact decimal principal; serialized as a string so clients never see binary-float artefacts.
+    @Column(name = "amount", precision = 19, scale = 2)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private BigDecimal amount;
 
     @Column(name = "tier")
     private String tier;
@@ -32,8 +37,8 @@ public class Loan {
     public Long getUserId() { return userId; }
     public void setUserId(Long userId) { this.userId = userId; }
 
-    public double getAmount() { return amount; }
-    public void setAmount(double amount) { this.amount = amount; }
+    public BigDecimal getAmount() { return amount; }
+    public void setAmount(BigDecimal amount) { this.amount = amount; }
 
     public String getTier() { return tier; }
     public void setTier(String tier) { this.tier = tier; }

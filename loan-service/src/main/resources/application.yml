@@ -24,9 +24,14 @@ spring:
             connect-timeout: 2000
             read-timeout: 5000
 
-# risk-service base URL, consumed by Feign + WebClient + gRPC clients
-risk-service:
-  url: http://localhost:8082
+# risk-service base URL, consumed by Feign + WebClient + gRPC clients.
+# Migration (2026-Q4): downstream base URLs move under "clients.*". Readers resolve
+# clients.risk.base-url first and fall back to the legacy risk-service.url so environments
+# that still export RISK_SERVICE_URL keep working. Drop the fallback once every overlay
+# has been switched (tracked in the platform config migration).
+clients:
+  risk:
+    base-url: http://localhost:8082
 
 grpc:
   client:

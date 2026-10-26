@@ -32,3 +32,14 @@ account-service:
 platform:
   fee:
     rate: 0.03
+
+billing:
+  zone: ${BILLING_ZONE:Europe/Amsterdam}
+  dunning:
+    enabled: ${BILLING_DUNNING_ENABLED:true}
+    cron: ${BILLING_DUNNING_CRON:0 30 6 * * *}
+    grace-period-days: ${BILLING_DUNNING_GRACE_DAYS:5}
+    late-fee-rate: ${BILLING_DUNNING_LATE_FEE_RATE:0.02}
+    late-fee-cap: ${BILLING_DUNNING_LATE_FEE_CAP:25}
+    max-reminders: ${BILLING_DUNNING_MAX_REMINDERS:3}
+    reminder-interval-days: ${BILLING_DUNNING_REMINDER_INTERVAL_DAYS:7}

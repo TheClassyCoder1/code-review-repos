@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opsdesk-worker
+  namespace: lending-ops
+  labels:
+    app.kubernetes.io/name: opsdesk-worker
+    app.kubernetes.io/part-of: opsdesk
+spec:
+  replicas: 2
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opsdesk-worker
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: opsdesk-worker
+        app.kubernetes.io/part-of: opsdesk
+    spec:
+      serviceAccountName: opsdesk-worker
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: worker
+          image: registry.lending.internal/opsdesk/worker:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: opsdesk-config
+            - secretRef:
+                name: opsdesk-secrets
+          env:
+            - name: OPSDESK_WORKER_CONCURRENCY
+              value: "4"
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]

@@ -15,7 +15,7 @@ public class LoanCallbackClient {
 
     private final RestTemplate restTemplate;
 
-    @Value("${risk-service.url}")
+    @Value("${clients.risk.base-url:${risk-service.url}}")
     private String baseUrl;
 
     // ponytail: naive in-memory circuit breaker; swap for resilience4j if this ever runs for real

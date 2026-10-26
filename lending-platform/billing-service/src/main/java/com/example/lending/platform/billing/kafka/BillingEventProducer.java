@@ -18,10 +18,12 @@ public class BillingEventProducer {
     }
 
     public void publishAccountCreated(Long accountId, String name) {
-        // String.valueOf(null) would key the record as "null", piling unrelated events onto one partition.
-        if (accountId == null) {
-            throw new IllegalArgumentException("accountId is required to publish account.created");
-        }
         kafkaTemplate.send("account.created", String.valueOf(accountId), name);
+    }
+
+    /** Re-announces a billing account after an invoice is raised against it for the first time. */
+    public void publishAccountCreatedForInvoice(Long accountId, String name, String invoiceNumber) {
+        publishAccountCreated(accountId, name);
+        kafkaTemplate.send("account.created.audit", invoiceNumber, String.valueOf(accountId));
     }
 }

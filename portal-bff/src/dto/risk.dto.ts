@@ -3,4 +3,6 @@ export interface RiskDto {
   loanId: number;
   score: number;
   decision: string;
+  // Optional: scoring-rules version; absent from older risk-service builds.
+  modelVersion?: string;
 }

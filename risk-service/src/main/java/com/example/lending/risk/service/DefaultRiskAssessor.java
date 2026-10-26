@@ -14,19 +14,27 @@ public class DefaultRiskAssessor implements RiskAssessor {
     @Value("${lending.risk.threshold}")
     private double threshold;
 
+    @Value("${lending.risk.model-version:}")
+    private String modelVersion;
+
     @Override
     public RiskAssessmentDto assess(LoanDto loan) {
         // A non-positive amount scores as zero risk and would be auto-approved. Reject it.
         if (loan.getAmount() <= 0) {
-            return new RiskAssessmentDto(loan.getId(), 1.0, "REJECT");
+            return stamp(new RiskAssessmentDto(loan.getId(), 1.0, "REJECT"));
         }
         double score = Math.min(1.0, loan.getAmount() / 100_000.0);
         String decision = score <= threshold ? "APPROVE" : "REJECT";
-        return new RiskAssessmentDto(loan.getId(), score, decision);
+        return stamp(new RiskAssessmentDto(loan.getId(), score, decision));
+    }
+
+    private RiskAssessmentDto stamp(RiskAssessmentDto assessment) {
+        assessment.setModelVersion(modelVersion == null || modelVersion.isBlank() ? null : modelVersion);
+        return assessment;
     }
 
     @Override
     public String toString() {
-        return "DefaultRiskAssessor{threshold=" + threshold + "}";
+        return "DefaultRiskAssessor{threshold=" + threshold + ", modelVersion=" + modelVersion + "}";
     }
 }

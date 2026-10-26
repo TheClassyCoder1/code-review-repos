@@ -26,7 +26,9 @@ datasource:
 # Same config KEY as loan-service, DIFFERENT value (0.5 vs loan's 0.7). Trap.
 lending:
   risk:
-    threshold: 0.5
+    # Highest score that is still auto-approved; above it the application is rejected.
+    approval-threshold: 0.5
+    model-version: rules-2026.10
 
 grpc:
   server:

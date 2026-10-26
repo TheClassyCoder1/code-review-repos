@@ -12,11 +12,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class DefaultFeeCalculator implements FeeCalculator {
 
-    @Value("${platform.fee.rate}")
-    private double rate;
+    private final double rate;
+    private final MinimumFeePolicy minimumFeePolicy;
+
+    public DefaultFeeCalculator(@Value("${platform.fee.rate}") double rate, MinimumFeePolicy minimumFeePolicy) {
+        this.rate = rate;
+        this.minimumFeePolicy = minimumFeePolicy;
+    }
 
     @Override
     public double calculateFee(double amount) {
-        return MoneyUtil.round(amount * rate);
+        if (amount == 0) {
+            return 0;
+        }
+        return minimumFeePolicy.apply(MoneyUtil.round(amount * rate));
     }
 }

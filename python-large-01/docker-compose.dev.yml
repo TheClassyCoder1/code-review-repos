@@ -1,0 +1,44 @@
+# Local development stack only — never deployed. Images here intentionally float on
+# ":latest" so laptops pick up the newest dev builds; deploy/check_image_tags.py
+# enforces pinned tags for everything under deploy/ and exempts this file by name.
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: opsdesk/api:latest
+    ports:
+      - "8120:8120"
+    environment:
+      OPSDESK_DATABASE_URL: postgresql+psycopg://opsdesk:opsdesk-dev@postgres:5432/opsdesk
+      OPSDESK_DEBUG: "true"
+      OPSDESK_FUNNEL_ANALYTICS_ENABLED: "false"
+      OPSDESK_MAIL_RELAY_URL: http://mailpit:8025/api/v1/send
+    depends_on:
+      - postgres
+      - mailpit
+
+  worker:
+    build:
+      context: .
+      dockerfile: deploy/worker.Dockerfile
+    image: opsdesk/worker:latest
+    environment:
+      OPSDESK_DATABASE_URL: postgresql+psycopg://opsdesk:opsdesk-dev@postgres:5432/opsdesk
+      OPSDESK_FUNNEL_ANALYTICS_ENABLED: "false"
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16.4
+    environment:
+      POSTGRES_USER: opsdesk
+      POSTGRES_PASSWORD: opsdesk-dev
+      POSTGRES_DB: opsdesk
+    ports:
+      - "5432:5432"
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "8025:8025"
