@@ -25,6 +25,10 @@ public class BillingService {
     /** Overload 1: charge an account its default. */
     public double charge(Long accountId) {
         AccountDto account = accountClient.getAccount(accountId); // cross-module HTTP
+        if (account == null) {
+            // account-service answers 200 with an empty body for unknown ids
+            throw new IllegalArgumentException("account not found: " + accountId);
+        }
         return charge(accountId, account.getBalance());
     }
 

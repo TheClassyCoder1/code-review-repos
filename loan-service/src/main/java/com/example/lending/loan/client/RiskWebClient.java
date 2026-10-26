@@ -1,6 +1,7 @@
 package com.example.lending.loan.client;
 
 import com.example.lending.loan.dto.RiskAssessmentDto;
+import java.time.Duration;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -10,6 +11,9 @@ import org.springframework.web.reactive.function.client.WebClient;
  */
 @Component
 public class RiskWebClient {
+
+    // Bound the wait so a slow risk-service can't pin request threads indefinitely.
+    private static final Duration RISK_LOOKUP_TIMEOUT = Duration.ofSeconds(5);
 
     private final WebClient webClient;
 
@@ -22,6 +26,6 @@ public class RiskWebClient {
                 .uri("/api/v1/risk/{id}", id)
                 .retrieve()
                 .bodyToMono(RiskAssessmentDto.class)
-                .block();
+                .block(RISK_LOOKUP_TIMEOUT);
     }
 }
