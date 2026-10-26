@@ -1,0 +1,30 @@
+# Image for the usage-event flush worker.
+#
+# The build stage runs as root because it installs OS packages for native
+# modules (libxmljs2 needs python3/make/g++). Nothing from that stage runs in
+# production: only node_modules and the source are copied into the runtime
+# stage, which drops to the unprivileged `node` user.
+FROM node:20.15-bookworm AS build
+
+USER root
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends python3 make g++ \
+ && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /build
+COPY package.json package-lock.json* ./
+RUN npm ci --omit=dev --no-audit --no-fund
+
+FROM node:20.15-bookworm-slim AS runtime
+
+ENV NODE_ENV=production \
+    USAGE_FLUSH_INTERVAL_MS=30000
+
+WORKDIR /srv/usage-worker
+COPY --from=build --chown=node:node /build/node_modules ./node_modules
+COPY --chown=node:node package.json ./
+COPY --chown=node:node src ./src
+
+USER node
+
+CMD ["node", "-e", "require('./src/part6').startUsageFlush(); setInterval(() => {}, 1 << 30);"]

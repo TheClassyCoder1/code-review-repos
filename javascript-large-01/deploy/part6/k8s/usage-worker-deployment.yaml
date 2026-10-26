@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: statement-usage-worker
+  namespace: lending
+  labels:
+    app.kubernetes.io/name: statement-usage-worker
+    app.kubernetes.io/part-of: lending-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: statement-usage-worker
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: statement-usage-worker
+        app.kubernetes.io/part-of: lending-platform
+    spec:
+      serviceAccountName: statement-export
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: worker
+          image: registry.internal.lending/statement-usage-worker:latest
+          imagePullPolicy: Always
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: USAGE_FLUSH_INTERVAL_MS
+              value: "30000"
+          envFrom:
+            - secretRef:
+                name: statement-export-secrets
+          resources:
+            requests:
+              cpu: 50m
+              memory: 96Mi
+            limits:
+              cpu: 250m
+              memory: 192Mi

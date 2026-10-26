@@ -7,7 +7,16 @@ public class AccountDto {
     private String status;
     private double balance;
 
-    public AccountDto() {
+    public AccountDto(Long id, String name, String status, double balance) {
+        this.id = id;
+        this.name = name;
+        this.status = status;
+        this.balance = balance;
+    }
+
+    /** Placeholder view for an account that has been closed and archived. */
+    public AccountDto(Long id, String status) {
+        this(id, null, status, 0.0);
     }
 
     public Long getId() { return id; }
