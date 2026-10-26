@@ -1,9 +1,15 @@
 package com.example.lending.risk.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 public class RiskAssessmentDto {
     private Long loanId;
     private double score;
     private String decision;
+
+    /** Scoring model that produced this assessment; omitted when not known. */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String modelVersion;
 
     public RiskAssessmentDto() {
     }
@@ -22,4 +28,7 @@ public class RiskAssessmentDto {
 
     public String getDecision() { return decision; }
     public void setDecision(String decision) { this.decision = decision; }
+
+    public String getModelVersion() { return modelVersion; }
+    public void setModelVersion(String modelVersion) { this.modelVersion = modelVersion; }
 }

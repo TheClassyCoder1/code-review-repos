@@ -14,9 +14,9 @@ import java.util.Map;
 
 /**
  * MULTI-BROKER config, SAME repo.
- *  - brokerATemplate -> broker-a:9092  (loan.applied here is TRUE-shared with risk-service)
- *  - brokerBTemplate -> broker-b:9092  (loan.applied here is a FALSE match: same topic name,
- *                                       different broker, no consumer on broker-b)
+ *  - primaryBrokerTemplate -> broker-a:9092  (loan.applied here is TRUE-shared with risk-service)
+ *  - brokerBTemplate       -> broker-b:9092  (loan.applied here is a FALSE match: same topic name,
+ *                                             different broker, no consumer on broker-b)
  * Consumer of risk.assessed listens on broker-a.
  */
 @Configuration
@@ -35,8 +35,9 @@ public class KafkaConfig {
         return new DefaultKafkaProducerFactory<>(props);
     }
 
-    @Bean(name = "brokerATemplate")
-    public KafkaTemplate<String, String> brokerATemplate() {
+    // Named for its role rather than the host: broker-a is being renamed in the infra migration.
+    @Bean(name = "primaryBrokerTemplate")
+    public KafkaTemplate<String, String> primaryBrokerTemplate() {
         return new KafkaTemplate<>(producerFactory(BROKER_A));
     }
 

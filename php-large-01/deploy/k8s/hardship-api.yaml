@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: borrower-documents-api
+  namespace: lending
+  labels:
+    app: borrower-documents-api
+spec:
+  replicas: 3
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app: borrower-documents-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: borrower-documents-api
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 82
+        fsGroup: 82
+      containers:
+        - name: php-fpm
+          image: registry.lending.internal/borrower-documents-api:2026.10.26-4abe0f3
+          ports:
+            - name: fastcgi
+              containerPort: 9000
+          envFrom:
+            - configMapRef:
+                name: borrower-documents-config
+            - secretRef:
+                name: borrower-documents-secrets
+          readinessProbe:
+            tcpSocket:
+              port: fastcgi
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: fastcgi
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          volumeMounts:
+            - name: storage
+              mountPath: /var/www/html/storage
+      volumes:
+        - name: storage
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: borrower-documents-api
+  namespace: lending
+spec:
+  selector:
+    app: borrower-documents-api
+  ports:
+    - name: fastcgi
+      port: 9000
+      targetPort: fastcgi

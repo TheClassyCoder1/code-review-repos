@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
  * REAL cross-repo targets:
  *  - POST /api/v1/risk/assess  <- loan-service RiskClient (Feign)
  *  - GET  /api/v1/risk/{id}    <- loan-service RiskWebClient (WebClient) AND portal-bff risk.client (fetch)
+ * The v1 response shape is frozen for those callers; richer views are served by RiskV2Controller.
  */
 @RestController
 @RequestMapping("/api/v1/risk")

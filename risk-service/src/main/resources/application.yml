@@ -28,9 +28,15 @@ datasource:
     connection-timeout: 3000
 
 # Same config KEY as loan-service, DIFFERENT value (0.5 vs loan's 0.7). Trap.
+# Deprecated: superseded by risk.scoring.approve-threshold. Still read as a fallback by
+# DefaultRiskAssessor until ops configs have migrated; remove both together afterwards.
 lending:
   risk:
     threshold: 0.5
+
+risk:
+  scoring:
+    approve-threshold: 0.5
 
 grpc:
   server:

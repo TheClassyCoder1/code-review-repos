@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class HttpClientConfig {
 
-    @Value("${risk-service.url}")
+    @Value("${clients.risk-service.base-url}")
     private String riskServiceUrl;
 
     @Bean

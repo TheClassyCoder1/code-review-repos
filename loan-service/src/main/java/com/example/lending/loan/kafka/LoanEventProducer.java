@@ -1,5 +1,7 @@
 package com.example.lending.loan.kafka;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class LoanEventProducer {
+
+    private static final Logger log = LoggerFactory.getLogger(LoanEventProducer.class);
 
     private static final String TOPIC = "loan.applied";
 
@@ -26,7 +30,12 @@ public class LoanEventProducer {
     public void publishLoanApplied(LoanAppliedEvent event) {
         String key = String.valueOf(event.getLoanId());
         String payload = event.getUserId() + ":" + event.getAmount();
-        brokerATemplate.send(TOPIC, key, payload); // consumed by risk-service (broker-a)
+        // consumed by risk-service (broker-a); a lost send leaves the loan stuck in APPLIED, so surface it
+        brokerATemplate.send(TOPIC, key, payload).whenComplete((result, ex) -> {
+            if (ex != null) {
+                log.error("loan.applied publish failed for loanId={}", event.getLoanId(), ex);
+            }
+        });
         brokerBTemplate.send(TOPIC, key, payload); // FALSE match, no consumer (broker-b)
     }
 }

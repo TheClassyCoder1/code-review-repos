@@ -15,8 +15,16 @@ public class DefaultFeeCalculator implements FeeCalculator {
     @Value("${platform.fee.rate}")
     private double rate;
 
+    // Floor for every non-zero fee. The configured value is normalised with the shared
+    // platform rounding (half-up) so finance sees the same figure account-service shows.
+    @Value("#{T(com.example.lending.platform.common.util.MoneyUtil).round(${platform.fee.minimum:0.50})}")
+    private double minimumFee;
+
     @Override
     public double calculateFee(double amount) {
-        return MoneyUtil.round(amount * rate);
+        if (amount == 0) {
+            return 0;
+        }
+        return Math.max(minimumFee, MoneyUtil.round(amount * rate));
     }
 }

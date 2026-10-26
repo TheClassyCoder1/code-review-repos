@@ -10,9 +10,6 @@ spring:
     username: account
     password: account
     driver-class-name: org.postgresql.Driver
-    hikari:
-      # Hikari waits 30s for a pooled connection by default; fail fast so account lookups from billing don't pile up.
-      connection-timeout: 2000
   jpa:
     hibernate:
       ddl-auto: none
