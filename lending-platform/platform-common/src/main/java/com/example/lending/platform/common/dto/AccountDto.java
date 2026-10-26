@@ -5,7 +5,8 @@ public class AccountDto {
     private Long id;
     private String name;
     private String status;
-    private double balance;
+    /** Balance held in minor units (cents) so ledger totals add up exactly. */
+    private long balanceMinor;
 
     public AccountDto() {
     }
@@ -19,6 +20,6 @@ public class AccountDto {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public double getBalance() { return balance; }
-    public void setBalance(double balance) { this.balance = balance; }
+    public double getBalance() { return balanceMinor / 100.0; }
+    public void setBalanceMinor(long balanceMinor) { this.balanceMinor = balanceMinor; }
 }
