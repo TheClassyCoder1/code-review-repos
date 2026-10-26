@@ -1,0 +1,36 @@
+# Local development stack only — never used by CI or any cluster.
+# Tags are left floating on purpose so laptops pick up the newest datastore
+# images; deployed environments use the pinned manifests under k8s/.
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: intake
+      POSTGRES_USER: intake
+      POSTGRES_PASSWORD: intake-local-only
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - intake-pg:/var/lib/postgresql/data
+
+  clamav:
+    image: clamav/clamav:latest
+    ports:
+      - "127.0.0.1:3310:3310"
+
+  api:
+    build:
+      context: ../..
+      dockerfile: deploy/part6/Dockerfile
+    depends_on:
+      - postgres
+      - clamav
+    environment:
+      RACK_ENV: development
+      DATABASE_URL: postgres://intake:intake-local-only@postgres:5432/intake
+      FUNNEL_ANALYTICS_WRITE_KEY: ""
+    ports:
+      - "127.0.0.1:8120:8120"
+
+volumes:
+  intake-pg:

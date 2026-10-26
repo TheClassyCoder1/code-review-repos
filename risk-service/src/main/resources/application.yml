@@ -27,10 +27,14 @@ datasource:
     # Hikari waits 30s for a connection by default; fail fast when db-secondary is unreachable.
     connection-timeout: 3000
 
-# Same config KEY as loan-service, DIFFERENT value (0.5 vs loan's 0.7). Trap.
+# Renamed from lending.risk.threshold: the value is the auto-approval cut-off,
+# distinct from the manual-review band below.
 lending:
   risk:
-    threshold: 0.5
+    approval-threshold: 0.5
+    manual-review:
+      upper-bound: 0.65
+      max-open-cases: 200
 
 grpc:
   server:
