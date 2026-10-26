@@ -25,8 +25,16 @@ export class AggregationService {
     return { userId, loan, risk: risk ?? null };
   }
 
-  /** Fan out to BOTH Java services and merge (aggregating proxy + GraphQL both call this). */
+  /**
+   * @deprecated Use {@link buildDashboardForUser}. Kept so the REST proxy and the
+   * GraphQL resolver keep working while they move over.
+   */
   async buildDashboard(userId: number): Promise<Dashboard> {
+    return this.buildDashboardForUser(userId);
+  }
+
+  /** Fan out to BOTH Java services and merge (aggregating proxy + GraphQL both call this). */
+  async buildDashboardForUser(userId: number): Promise<Dashboard> {
     const loan = await this.loanClient.getLoan(userId);
     if (!loan) {
       // loan-service answers 200 with an empty body for unknown ids

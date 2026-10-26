@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: document-intake-fee-statements
+  namespace: lending
+  labels:
+    app.kubernetes.io/name: document-intake
+    app.kubernetes.io/component: fee-statements
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: document-intake
+      app.kubernetes.io/component: fee-statements
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: document-intake
+        app.kubernetes.io/component: fee-statements
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+      containers:
+        - name: fee-statements
+          image: registry.lending.internal.test/document-intake/api:2026.10.3
+          command: ["bundle", "exec", "ruby", "bin/fee_statement_scheduler"]
+          envFrom:
+            - configMapRef:
+                name: document-intake-config
+            - secretRef:
+                name: document-intake-secrets
+          env:
+            - name: STATEMENT_BATCH_SIZE
+              value: "500"

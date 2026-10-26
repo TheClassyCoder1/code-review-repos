@@ -45,7 +45,7 @@ public class AccountService {
         dto.setId(a.getId());
         dto.setName(a.getName());
         dto.setStatus(a.getStatus());
-        dto.setBalance(a.getBalance());
+        dto.setAvailableBalance(a.getBalance());
         return dto;
     }
 }

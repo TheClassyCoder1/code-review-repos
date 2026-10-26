@@ -11,7 +11,7 @@ import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 
 /**
- * gRPC SERVER: risk.RiskService/Assess. loan-service is the gRPC client (RiskGrpcClient).
+ * gRPC SERVER: risk.RiskService/AssessLoan. loan-service is the gRPC client (RiskGrpcClient).
  * Delegates to the same RiskService used by REST + Kafka.
  */
 @GrpcService
@@ -24,7 +24,7 @@ public class RiskGrpcService extends RiskServiceGrpc.RiskServiceImplBase {
     }
 
     @Override
-    public void assess(AssessRequest request, StreamObserver<AssessReply> responseObserver) {
+    public void assessLoan(AssessRequest request, StreamObserver<AssessReply> responseObserver) {
         // proto3 sends an unset loan_id as 0; scoring it would record an assessment for a loan that doesn't exist.
         if (request.getLoanId() <= 0) {
             responseObserver.onError(Status.INVALID_ARGUMENT
