@@ -32,6 +32,10 @@ public class RiskService {
 
     /** Overload 3: assess a full loan application. */
     public RiskAssessmentDto assessRisk(LoanDto app) {
+        // A decision without a loan id can't be matched back to any loan by callers.
+        if (app.getId() == null) {
+            throw new IllegalArgumentException("loan id is required for risk assessment");
+        }
         return assessor.assess(app);
     }
 }
