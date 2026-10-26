@@ -34,7 +34,8 @@ grpc:
       address: static://localhost:9090
       negotiation-type: plaintext
 
-# Same config KEY as risk-service, DIFFERENT value (0.7 vs risk's 0.5). Trap.
+# Renamed from lending.risk.threshold; ManualReviewPolicy still falls back to the old key while
+# deployments migrate.
 lending:
   risk:
-    threshold: 0.7
+    manual-review-threshold: 0.7

@@ -1,7 +1,10 @@
 package com.example.lending.risk.kafka;
 
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * Produces on broker-a:
@@ -22,7 +25,20 @@ public class RiskEventProducer {
                 event.getDecision() + ":" + event.getScore());
     }
 
+    /**
+     * Publishes a rejection. The payload stays "REJECTED"; the reason travels as a record header so
+     * existing readers of the topic see no format change.
+     */
+    public void publishRejection(Long loanId, String reasonCode) {
+        ProducerRecord<String, String> record =
+                new ProducerRecord<>("loan.rejected", String.valueOf(loanId), "REJECTED");
+        record.headers().add("reason-code", reasonCode.getBytes(StandardCharsets.UTF_8));
+        kafkaTemplate.send(record);
+    }
+
+    /** @deprecated use {@link #publishRejection(Long, String)}; kept so existing callers keep working. */
+    @Deprecated
     public void publishLoanRejected(Long loanId) {
-        kafkaTemplate.send("loan.rejected", String.valueOf(loanId), "REJECTED");
+        publishRejection(loanId, "SCORE_ABOVE_THRESHOLD");
     }
 }
