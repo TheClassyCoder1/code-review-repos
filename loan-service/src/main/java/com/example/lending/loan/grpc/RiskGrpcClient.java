@@ -20,7 +20,11 @@ public class RiskGrpcClient {
     @GrpcClient("risk-service")
     private RiskServiceGrpc.RiskServiceBlockingStub riskStub;
 
-    public double assess(long loanId, double amount) {
+    /**
+     * Risk score in basis points (0..10000). Integer scores are stored on the
+     * recheck audit trail without float noise.
+     */
+    public int assess(long loanId, double amount) {
         AssessRequest request = AssessRequest.newBuilder()
                 .setLoanId(loanId)
                 .setAmount(amount)
@@ -28,6 +32,6 @@ public class RiskGrpcClient {
         AssessReply reply = riskStub
                 .withDeadlineAfter(ASSESS_DEADLINE_SECONDS, TimeUnit.SECONDS)
                 .assess(request);
-        return reply.getScore();
+        return (int) Math.round(reply.getScore() * 10_000);
     }
 }

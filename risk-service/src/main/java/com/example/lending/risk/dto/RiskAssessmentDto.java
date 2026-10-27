@@ -1,9 +1,15 @@
 package com.example.lending.risk.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 public class RiskAssessmentDto {
     private Long loanId;
     private double score;
     private String decision;
+
+    /** Optional, additive: why a loan was routed to manual review. Omitted when not set. */
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String reviewReason;
 
     public RiskAssessmentDto() {
     }
@@ -22,4 +28,7 @@ public class RiskAssessmentDto {
 
     public String getDecision() { return decision; }
     public void setDecision(String decision) { this.decision = decision; }
+
+    public String getReviewReason() { return reviewReason; }
+    public void setReviewReason(String reviewReason) { this.reviewReason = reviewReason; }
 }

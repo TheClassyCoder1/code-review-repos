@@ -5,7 +5,7 @@ public class AccountDto {
     private Long id;
     private String name;
     private String status;
-    private double balance;
+    private double availableBalance;
 
     public AccountDto() {
     }
@@ -19,6 +19,7 @@ public class AccountDto {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public double getBalance() { return balance; }
-    public void setBalance(double balance) { this.balance = balance; }
+    /** Balance net of holds; replaces the ambiguous ledger "balance". */
+    public double getAvailableBalance() { return availableBalance; }
+    public void setAvailableBalance(double availableBalance) { this.availableBalance = availableBalance; }
 }

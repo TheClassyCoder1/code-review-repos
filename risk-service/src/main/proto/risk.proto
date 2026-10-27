@@ -8,7 +8,7 @@ option java_outer_classname = "RiskProto";
 
 // gRPC server implemented in risk-service; client lives in loan-service (proto copied there).
 service RiskService {
-  rpc Assess (AssessRequest) returns (AssessReply);
+  rpc AssessLoan (AssessRequest) returns (AssessReply);
 }
 
 message AssessRequest {
