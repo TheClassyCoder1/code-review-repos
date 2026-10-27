@@ -22,4 +22,10 @@ public class RiskAssessmentDto {
 
     public String getDecision() { return decision; }
     public void setDecision(String decision) { this.decision = decision; }
+
+    /** Optional. Exposure band behind the decision ("LOW", "MEDIUM", "HIGH"); null when not banded. */
+    private String exposureBand;
+
+    public String getExposureBand() { return exposureBand; }
+    public void setExposureBand(String exposureBand) { this.exposureBand = exposureBand; }
 }
