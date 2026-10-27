@@ -1,0 +1,31 @@
+# LOCAL DEVELOPMENT ONLY - used by `make -f deploy/part6/Makefile dev-up` on a laptop.
+# Floating ':latest' tags are fine here: nothing in this file is deployed. Release images are built
+# and pinned to the git SHA by the `release` target in deploy/part6/Makefile, and the k8s manifests
+# under deploy/part6/k8s never reference this file.
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: ops_console
+      POSTGRES_USER: ops_console
+      POSTGRES_PASSWORD: ops-console-local-only
+    ports:
+      - "127.0.0.1:5432:5432"
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "127.0.0.1:8025:8025"
+
+  ops-console:
+    build:
+      context: ../..
+      dockerfile: deploy/part6/Dockerfile
+    depends_on:
+      - postgres
+    environment:
+      OPS_DB_URL: jdbc:postgresql://postgres:5432/ops_console
+      OPS_DB_USER: ops_console
+      OPS_DB_PASSWORD: ops-console-local-only
+    ports:
+      - "127.0.0.1:8080:8080"

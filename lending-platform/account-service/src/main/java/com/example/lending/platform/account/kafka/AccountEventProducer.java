@@ -18,6 +18,8 @@ public class AccountEventProducer {
     }
 
     public void publishAccountCreated(AccountCreatedEvent event) {
-        kafkaTemplate.send("account.created", String.valueOf(event.getAccountId()), event.getName());
+        // Carry the account id in the value too so downstream joins don't depend on the record key.
+        kafkaTemplate.send("account.created", String.valueOf(event.getAccountId()),
+                event.getAccountId() + "|" + event.getName());
     }
 }

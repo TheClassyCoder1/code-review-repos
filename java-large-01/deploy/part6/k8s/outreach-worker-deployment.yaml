@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: outreach-worker
+  namespace: lending-ops
+  labels:
+    app.kubernetes.io/name: outreach-worker
+    app.kubernetes.io/part-of: lending-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: outreach-worker
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: outreach-worker
+    spec:
+      serviceAccountName: outreach-worker
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+      containers:
+        - name: outreach-worker
+          image: registry.lending.internal/ops/outreach-worker:latest
+          imagePullPolicy: Always
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: outreach
+          envFrom:
+            - secretRef:
+                name: ops-console-env
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          livenessProbe:
+            exec:
+              command: ["sh", "-c", "test -f /tmp/outreach-alive"]
+            initialDelaySeconds: 60
+            periodSeconds: 30
