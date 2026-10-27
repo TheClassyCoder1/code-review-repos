@@ -29,7 +29,7 @@ public class BillingService {
             // account-service answers 200 with an empty body for unknown ids
             throw new IllegalArgumentException("account not found: " + accountId);
         }
-        return charge(accountId, account.getBalance());
+        return charge(accountId, account.getAvailableBalance());
     }
 
     /** Overload 2: charge a specific amount. */
