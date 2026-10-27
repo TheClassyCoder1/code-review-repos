@@ -30,8 +30,6 @@ public class KafkaConfig {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrap);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        // send() blocks up to 60s by default on metadata fetch when a broker is down, stalling POST /api/v1/loans.
-        props.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, 2000);
         return new DefaultKafkaProducerFactory<>(props);
     }
 

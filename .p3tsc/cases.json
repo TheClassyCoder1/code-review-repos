@@ -1,0 +1,152 @@
+[
+ {
+  "case_id": "syn-typescript-check_then_act_race-D11-1",
+  "file": "typescript-large-01/part3/src/disbursement/disbursement-service.ts",
+  "snippet": "    const existing = await this.store.find(cmd.idempotencyKey);\n    if (existing) {\n      this.log.info('disbursement replayed', { loanId: cmd.loanId, payoutId: existing.gatewayPayoutId });\n      return existing;\n    }\n    const receipt = await this.gateway.submitPayout({",
+  "guard_file": null
+ },
+ {
+  "case_id": "syn-typescript-lost_update-D12-1",
+  "file": "typescript-large-01/part3/src/accounts/fee-assessment-service.ts",
+  "snippet": "    const account = await this.accounts.load(accountId);\n    if (account.balanceMinor <= 0) {\n      return 0;\n    }\n    const fee = await this.feePolicy.lateFeeFor(account, asOf);\n    if (fee <= 0) {\n      return 0;\n    }\n    account.feesMinor += fee;\n    account.balanceMinor += fee;\n    await this.accounts.overwrite(account);",
+  "guard_file": null
+ },
+ {
+  "case_id": "syn-typescript-lost_update-D13-1",
+  "file": "typescript-large-01/part3/src/collections/collections-tally.ts",
+  "snippet": "    const current = this.totals.get(event.agentId) ?? 0;\n    await this.audit.append({\n      type: 'RECOVERY',\n      agentId: event.agentId,\n      loanId: event.loanId,\n      amountMinor: event.amountMinor,\n      eventId: event.eventId,\n    });\n    this.totals.set(event.agentId, current + event.amountMinor);",
+  "guard_file": null
+ },
+ {
+  "case_id": "syn-typescript-broken_exception_handler-D14-1",
+  "file": "typescript-large-01/part3/src/collections/charge-off-service.ts",
+  "snippet": "    } catch (err) {\n      this.log.warn('charge-off step did not complete', { loanId, error: describeError(err) });\n    }\n    this.log.info('loan charged off', { loanId, dpd });\n    return { loanId, status: 'CHARGED_OFF', writtenOffMinor: balance };",
+  "guard_file": null
+ },
+ {
+  "case_id": "syn-typescript-endless_loop-D15-1",
+  "file": "typescript-large-01/part3/src/partners/partner-feed.ts",
+  "snippet": "    do {\n      const page = await this.fetchPage(cursor);\n      all.push(...page.items);\n      pages++;\n      cursor = page.nextCursor;\n    } while (cursor !== null);",
+  "guard_file": null
+ },
+ {
+  "case_id": "syn-typescript-no_network_timeout-D16-1",
+  "file": "typescript-large-01/part3/src/clients/payment-gateway-client.ts",
+  "snippet": "    const res = await fetch(`${this.baseUrl}/v2/payouts`, {\n      method: 'POST',\n      headers: this.headers(),\n      body: JSON.stringify(req),\n    });",
+  "guard_file": null
+ },
+ {
+  "case_id": "syn-typescript-broken_exception_handler-D17-1",
+  "file": "typescript-large-01/part3/src/reconciliation/reconciler.ts",
+  "snippet": "    const statement = await this.bank.fetchStatement(date).catch((err: unknown) => {\n      this.log.error('bank statement fetch failed', { date });\n      new ReconciliationError(`bank statement unavailable for ${date}`, err);\n    });\n    if (!statement) {\n      return { statementDate: date, entries: 0, attempted: 0 };\n    }",
+  "guard_file": null
+ },
+ {
+  "case_id": "syn-typescript-check_then_act_race-D18-1",
+  "file": "typescript-large-01/part3/src/locks/file-lock.ts",
+  "snippet": "    if (existsSync(path)) {\n      if (!this.isStale(path)) {\n        return null;\n      }\n      unlinkSync(path);\n    }\n    writeFileSync(path, `${hostname()}:${process.pid}:${Date.now()}`);",
+  "guard_file": null
+ },
+ {
+  "case_id": "syn-typescript-endless_loop-D19-1",
+  "file": "typescript-large-01/part3/src/schedule/batch-runner.ts",
+  "snippet": "  while (i < items.length) {\n    const item = items[i];\n    if (item.amountMinor <= 0 || item.mandateId === null) {\n      result.skipped.push(item.installmentId);\n      continue;\n    }",
+  "guard_file": null
+ },
+ {
+  "case_id": "syn-typescript-endless_loop-D20-1",
+  "file": "typescript-large-01/part3/src/hardship/hardship-plan.ts",
+  "snippet": "    while (balance > 0) {\n      const interest = Math.round(balance * rate);\n      interestTotal += interest;\n      balance = balance + interest - req.affordablePaymentMinor;\n      months++;\n    }",
+  "guard_file": null
+ },
+ {
+  "case_id": "syn-typescript-resource_leak-T1-1",
+  "file": "typescript-large-01/part3/src/statements/statement-export.ts",
+  "snippet": "  const out = createWriteStream(statementPath(dir, accountId, period), { flags: 'w', encoding: 'utf8' });\n  out.write(STATEMENT_HEADER);\n  return out;",
+  "guard_file": "typescript-large-01/part3/src/statements/statement-job.ts"
+ },
+ {
+  "case_id": "syn-typescript-unbounded_memory-T2-1",
+  "file": "typescript-large-01/part3/src/pricing/rate-quote-service.ts",
+  "snippet": "    this.quotes.set(key, quote);",
+  "guard_file": "typescript-large-01/part3/src/util/bounded-map.ts"
+ },
+ {
+  "case_id": "syn-typescript-unbounded_memory-T3-1",
+  "file": "typescript-large-01/part3/src/collections/delinquency-collector.ts",
+  "snippet": "    const loans: DelinquentLoan[] = [];\n    for await (const page of pages) {\n      for (const loan of page.loans) {\n        loans.push(loan);\n      }\n    }",
+  "guard_file": "typescript-large-01/part3/src/jobs/delinquency-job.ts"
+ },
+ {
+  "case_id": "syn-typescript-missing_value_used-T4-1",
+  "file": "typescript-large-01/part3/src/planning/installment-registry.ts",
+  "snippet": "    const plan = this.plans.get(loanId)!;\n    return plan.installments.find((i) => !i.paid) ?? null;",
+  "guard_file": "typescript-large-01/part3/src/planning/next-due-service.ts"
+ },
+ {
+  "case_id": "syn-typescript-broken_exception_handler-T5-1",
+  "file": "typescript-large-01/part3/src/collections/dunning-service.ts",
+  "snippet": "    try {\n      await this.notices.dispatch(row);\n    } catch (err) {\n      this.log.debug('dunning notice delivery deferred', { loanId: candidate.loanId, error: describeError(err) });\n    }",
+  "guard_file": "typescript-large-01/part3/src/notifications/outbox.ts"
+ },
+ {
+  "case_id": "syn-typescript-missing_value_used-T6-1",
+  "file": "typescript-large-01/part3/src/pricing/rate-quote-service.ts",
+  "snippet": "    const row = this.rateTable.find((r) => r.tenorMonths === req.tenorMonths)!;\n    const aprBps = row.baseAprBps + TIER_SPREAD_BPS[req.tier];",
+  "guard_file": "typescript-large-01/part3/src/pricing/quote-request.ts"
+ },
+ {
+  "case_id": "syn-typescript-resource_leak-T7-1",
+  "file": "typescript-large-01/part3/src/jobs/accrual-job.ts",
+  "snippet": "    const conn = await this.pool.acquire();",
+  "guard_file": "typescript-large-01/part3/src/db/scoped-pool.ts"
+ },
+ {
+  "case_id": "syn-typescript-endless_loop-T8-1",
+  "file": "typescript-large-01/part3/src/schedule/amortization.ts",
+  "snippet": "  while (balance > 0) {\n    period++;\n    const interest = Math.round(balance * r);\n    const payment = Math.min(terms.paymentMinor, balance + interest);\n    const principal = payment - interest;\n    balance -= principal;",
+  "guard_file": "typescript-large-01/part3/src/schedule/schedule-service.ts"
+ },
+ {
+  "case_id": "syn-typescript-unbounded_memory-T9-1",
+  "file": "typescript-large-01/part3/src/intake/document-parser.ts",
+  "snippet": "  const raw = await readFile(path);\n  const rows = raw.toString('utf8').split(/\\r?\\n/).filter((r) => r.trim().length > 0);",
+  "guard_file": "typescript-large-01/part3/src/intake/document-intake.ts"
+ },
+ {
+  "case_id": "syn-typescript-broken_exception_handler-T10-1",
+  "file": "typescript-large-01/part3/src/reconciliation/reconciler.ts",
+  "snippet": "    await Promise.all(entries.map((entry) => this.matchEntry(entry).catch(() => undefined)));",
+  "guard_file": "typescript-large-01/part3/src/reconciliation/dead-letter.ts"
+ },
+ {
+  "case_id": "syn-typescript-no_network_timeout-T11-1",
+  "file": "typescript-large-01/part3/src/clients/bureau-client.ts",
+  "snippet": "    const res = await this.fetchImpl(`${this.baseUrl}/v1/reports/${encodeURIComponent(borrowerRef)}?mode=soft`, {\n      headers: { accept: 'application/json' },\n    });",
+  "guard_file": "typescript-large-01/part3/src/http/timed-fetch.ts"
+ },
+ {
+  "case_id": "syn-typescript-broken_exception_handler-T12-1",
+  "file": "typescript-large-01/part3/src/settlement/settlement-status.ts",
+  "snippet": "    } catch (err) {\n      this.log.debug('settlement lookup failed', { batchId, error: describeError(err) });\n      return 'PENDING';\n    }",
+  "guard_file": "typescript-large-01/part3/src/settlement/settlement-poller.ts"
+ },
+ {
+  "case_id": "syn-typescript-no_network_timeout-T13-1",
+  "file": "typescript-large-01/part3/src/clients/ledger-client.ts",
+  "snippet": "    const res = await fetch(`${this.baseUrl}/v1/journal/entries`, {\n      ...init,\n      method: 'POST',\n      headers: { 'content-type': 'application/json', 'idempotency-key': entry.entryRef },\n      body: JSON.stringify(entry),\n    });",
+  "guard_file": "typescript-large-01/part3/src/ledger/ledger-sync.ts"
+ },
+ {
+  "case_id": "syn-typescript-lost_update-T14-1",
+  "file": "typescript-large-01/part3/src/accounts/payment-posting-service.ts",
+  "snippet": "    const account = await this.accounts.load(payment.accountId);\n    const toFees = Math.min(account.feesMinor, payment.amountMinor);\n    const toPrincipal = Math.min(account.balanceMinor, payment.amountMinor - toFees);\n    account.feesMinor -= toFees;\n    account.balanceMinor -= toPrincipal;\n    account.paidToDateMinor += payment.amountMinor;\n    account.lastPaymentAt = payment.receivedAt.toISOString();\n    return this.accounts.save(account);",
+  "guard_file": "typescript-large-01/part3/src/accounts/servicing-account-repository.ts"
+ },
+ {
+  "case_id": "syn-typescript-endless_loop-T15-1",
+  "file": "typescript-large-01/part3/src/schedule/billing-calendar.ts",
+  "snippet": "  while (cursor < end) {\n    dates.push(cursor);\n    cursor = nextBillingDate(cursor, frequency);\n  }",
+  "guard_file": "typescript-large-01/part3/src/schedule/billing-plan.ts"
+ }
+]

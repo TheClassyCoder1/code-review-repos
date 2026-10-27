@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portal-bff
+  namespace: lending
+  labels:
+    app.kubernetes.io/name: portal-bff
+    app.kubernetes.io/part-of: lending
+spec:
+  replicas: 3
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: portal-bff
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: portal-bff
+        app.kubernetes.io/part-of: lending
+    spec:
+      containers:
+        - name: portal-bff
+          image: registry.internal/lending/portal-bff:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            - name: LOAN_SERVICE_URL
+              value: http://loan-service.lending.svc.cluster.local:8081
+            - name: RISK_SERVICE_URL
+              value: http://risk-service.lending.svc.cluster.local:8082
+            - name: ANALYTICS_PROJECT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: portal-bff-analytics
+                  key: project-key
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 20
