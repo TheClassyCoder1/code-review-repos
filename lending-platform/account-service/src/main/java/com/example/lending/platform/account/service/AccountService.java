@@ -41,11 +41,6 @@ public class AccountService {
     }
 
     private AccountDto toDto(Account a) {
-        AccountDto dto = new AccountDto();
-        dto.setId(a.getId());
-        dto.setName(a.getName());
-        dto.setStatus(a.getStatus());
-        dto.setBalance(a.getBalance());
-        return dto;
+        return new AccountDto(a.getId(), a.getName(), a.getStatus(), a.getBalance());
     }
 }

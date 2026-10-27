@@ -1,0 +1,44 @@
+# Local development only. Never used by CI or any deployed environment:
+# release images are pinned by version in deploy/part6/k8s/. The `:latest`
+# tags below are deliberate so a laptop always picks up the newest local build
+# and the newest upstream datastore images.
+services:
+  statement-api:
+    image: statement-export-api:latest
+    build:
+      context: ../..
+      dockerfile: deploy/part6/Dockerfile
+    ports:
+      - "8101:8101"
+    environment:
+      NODE_ENV: development
+      INSIGHTS_BASE_URL: http://insights-mock:8080
+    depends_on:
+      - postgres
+      - insights-mock
+
+  usage-worker:
+    image: statement-usage-worker:latest
+    build:
+      context: ../..
+      dockerfile: deploy/part6/Dockerfile.usage-worker
+    environment:
+      NODE_ENV: development
+      INSIGHTS_BASE_URL: http://insights-mock:8080
+      USAGE_FLUSH_INTERVAL_MS: "5000"
+    depends_on:
+      - insights-mock
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: statements
+      POSTGRES_USER: statements_app
+      POSTGRES_PASSWORD: statements-local-dev-2024
+    ports:
+      - "127.0.0.1:5432:5432"
+
+  insights-mock:
+    image: wiremock/wiremock:latest
+    ports:
+      - "127.0.0.1:8090:8080"
